@@ -1,12 +1,14 @@
 from flask import request
 from flask_restful import Resource
 from model import db, Notebook, NotebookSchema
+from flask_jwt_extended import jwt_required
 import datetime
 
 notebooks_schema = NotebookSchema(many=True)
 notebook_schema = NotebookSchema()
 
 class NotebookResource(Resource):
+    @jwt_required
     def get(self):
         notebooks = Notebook.query.all()
         notebooks = notebooks_schema.dump(notebooks).data
