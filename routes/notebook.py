@@ -1,6 +1,7 @@
 from flask import request
 from flask_restful import Resource
-from model import db, Notebook, NotebookSchema
+from models.db import db
+from models.notebook import Notebook, NotebookSchema
 from flask_jwt_extended import jwt_required
 import datetime
 
