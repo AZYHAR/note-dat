@@ -1,5 +1,6 @@
 from flask import Flask
 from marshmallow import Schema, fields, pre_load, validate
+from models.users import UserModel
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
@@ -16,6 +17,7 @@ class Note(db.Model):
     body = db.Column(db.String())
     creation_date = db.Column(db.DateTime, server_default=db.func.current_timestamp(), nullable=False)
     notebook_id = db.Column(db.Integer, db.ForeignKey('notebooks.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
 
 
 class Notebook(db.Model):
