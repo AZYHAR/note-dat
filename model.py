@@ -41,6 +41,6 @@ class NoteSchema(ma.Schema):
 
 
 class NotebookSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
-    title = fields.String(required=True)
+    id = fields.Integer()
+    title = fields.String()
     creation_date = fields.DateTime()

@@ -54,7 +54,7 @@ class NoteResource(Resource):
 
         result = note_schema.dump(note).data
 
-        return { "status": 'success', 'data': result }, 204
+        return { "status": "success", "data": result }, 201
 
     def delete(self):
         json_data = request.get_json(force=True)
@@ -69,4 +69,4 @@ class NoteResource(Resource):
 
         result = note_schema.dump(note).data
 
-        return { "status": 'success', 'data': result}, 204
+        return { "status": "success", "data": result}, 201
