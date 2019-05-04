@@ -3,7 +3,6 @@ from marshmallow import Schema, fields, pre_load, validate
 from models.db import db, ma
 from models.users import UserModel
 
-
 class Note(db.Model):
     __tablename__ = 'notes'
 
