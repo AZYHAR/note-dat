@@ -14,6 +14,7 @@ class NotebookResource(Resource):
         notebooks = notebooks_schema.dump(notebooks).data
         return {'status': 'success', 'data': notebooks}, 200
 
+    @jwt_required
     def post(self):
         json_data = request.get_json(force=True)
         if not json_data:
@@ -36,3 +37,40 @@ class NotebookResource(Resource):
         result = notebook_schema.dump(notebook).data
 
         return { "status": 'success', 'data': result }, 201
+
+    @jwt_required
+    def put(self):
+        json_data = request.get_json(force=True)
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        # Validate and deserialize input
+        data, errors = notebook_schema.load(json_data)
+        if errors:
+            return errors, 422
+        notebook = Notebook.query.filter_by(id=data['id']).first()
+        if not notebook:
+            return {'message': 'Category does not exist'}, 400
+        notebook.title = data['title']
+        
+        db.session.commit()
+
+        result = notebook_schema.dump(notebook).data
+
+        return { "status": "success", "data": result }, 201
+
+    @jwt_required
+    def delete(self):
+        json_data = request.get_json(force=True)
+        if not json_data:
+               return {'message': 'No input data provided'}, 400
+        # Validate and deserialize input
+        data, errors = notebook_schema.load(json_data)
+        if errors:
+            return errors, 422
+        notebook = Notebook.query.filter_by(id=data['id']).delete()
+        db.session.commit()
+
+        result = notebook_schema.dump(notebook).data
+
+        return { "status": "success", "data": result}, 201
+    
