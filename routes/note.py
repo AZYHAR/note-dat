@@ -1,6 +1,7 @@
 from flask import request
 from flask_restful import Resource
-from model import db, Note, NoteSchema
+from models.db import db
+from models.note import Note, NoteSchema
 import datetime
 
 notes_schema = NoteSchema(many=True)
