@@ -50,18 +50,20 @@ class UserLogin(Resource):
         current_user = UserModel.find_by_email(data['email'])
 
         if not current_user:
-            return {'message': 'User {} doesn\'t exist'.format(data['email'])}
+            return {'message': 'User {} doesn\'t exist'.format(data['email'])}, 403
         
         if UserModel.verify_hash(data['password'], current_user.password):
             access_token = create_access_token(identity = data['email'])
             refresh_token = create_refresh_token(identity = data['email'])
             return {
                 'message': 'Logged in as {}'.format(current_user.email),
+                'email': current_user.email,
+                'name': current_user.name,
                 'access_token': access_token,
                 'refresh_token': refresh_token
                 }
         else:
-            return {'message': 'Wrong credentials'}
+            return {'message': 'Wrong credentials'}, 403
 
   
 class UserLogoutAccess(Resource):
