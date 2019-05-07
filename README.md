@@ -31,3 +31,10 @@ flask db upgrade
 ```
 python run.py
 ```
+#### Start front-end
+
+```
+cd client
+npm install
+npm start
+```
