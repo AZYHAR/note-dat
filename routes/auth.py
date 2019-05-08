@@ -10,14 +10,14 @@ class UserRegistration(Resource):
     def post(self):
         json_data = request.get_json(force=True)
         if not json_data:
-               return {'message': 'No input data provided'}, 400
+            return {'message': 'No input data provided'}, 400
         # Validate and deserialize input
         data, errors = user_schema.load(json_data)
         if errors:
             return errors, 422
 
         if UserModel.find_by_email(data['email']):
-            return {'message': 'User {} already exists.'.format(data['email'])}
+            return {'message': 'User {} already exists.'.format(data['email'])}, 422
 
         new_user = UserModel(
             name = data['name'],
@@ -31,6 +31,8 @@ class UserRegistration(Resource):
             refresh_token = create_refresh_token(identity = data['email'])
             return {
                 'message': 'User {} was created'.format(data['email']),
+                'email': new_user.email,
+                'name': new_user.name,
                 'access_token': access_token,
                 'refresh_token': refresh_token
             }
