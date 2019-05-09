@@ -8,10 +8,12 @@ class Notebook(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
     creation_date = db.Column(db.DateTime)
-    
-    def __init__(self, title, creation_date):
-        self.title = title
-        self.creation_date = creation_date
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+
+    @classmethod
+    def filter_by_user_id(cls, user_id):
+        return cls.query.filter_by(user_id = user_id).all()
+
 
 class NotebookSchema(ma.Schema):
     id = fields.Integer(dump_only=True)

@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 from models.db import db
 from models.notebook import Notebook, NotebookSchema
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import (jwt_required, get_jwt_identity)
 import datetime
 
 notebooks_schema = NotebookSchema(many=True)
@@ -11,7 +11,9 @@ notebook_schema = NotebookSchema()
 class NotebookResource(Resource):
     @jwt_required
     def get(self):
-        notebooks = Notebook.query.all()
+        user_id = get_jwt_identity()
+
+        notebooks = Notebook.filter_by_user_id(user_id)
         notebooks = notebooks_schema.dump(notebooks).data
         return {'status': 'success', 'data': notebooks}, 200
 
@@ -25,19 +27,27 @@ class NotebookResource(Resource):
         if errors:
             return errors, 422
 
-        print(data['title'])
+        user_id = get_jwt_identity()
+
+        print(user_id)
 
         notebook = Notebook(
             title=data['title'],
-            creation_date=datetime.datetime.now()
+            creation_date=datetime.datetime.now(),
+            user_id=user_id
         )
 
-        db.session.add(notebook)
-        db.session.commit()
+        print(notebook.user_id)
 
-        result = notebook_schema.dump(notebook).data
+        try:
+            db.session.add(notebook)
+            db.session.commit()
 
-        return { "status": 'success', 'data': result }, 201
+            result = notebook_schema.dump(notebook).data
+            
+            return { "status": 'success', 'data': result }, 201
+        except:
+            return { "message": "Cannot save notebook" }, 500
 
     @jwt_required
     def put(self):
