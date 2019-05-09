@@ -3,6 +3,7 @@ from marshmallow import Schema, fields, pre_load, validate
 from models.db import db, ma
 from models.user import UserModel
 
+#Defines table structure
 class Note(db.Model):
     __tablename__ = 'notes'
 
@@ -13,6 +14,7 @@ class Note(db.Model):
     notebook_id = db.Column(db.Integer, db.ForeignKey('notebooks.id', ondelete='CASCADE'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 
+#Using for validation
 class NoteSchema(ma.Schema):
     id = fields.Integer()
     title = fields.String(required=True)
