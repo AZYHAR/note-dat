@@ -68,7 +68,8 @@ class NotebookResource(Resource):
         data, errors = notebook_schema.load(json_data)
         if errors:
             return errors, 422
-        notebook = Notebook.query.filter_by(id=data['id']).delete()
+        notebook = Notebook.query.filter_by(id=data['id']).first()
+        db.session.delete(notebook)
         db.session.commit()
 
         result = notebook_schema.dump(notebook).data
