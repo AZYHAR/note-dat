@@ -3,6 +3,7 @@ from marshmallow import Schema, fields, pre_load, validate
 from models.db import db, ma
 from models.note import Note
 
+#Creating model for Notebook
 class Notebook(db.Model):
     __tablename__ = 'notebooks'
 
@@ -16,7 +17,7 @@ class Notebook(db.Model):
         self.title = title
         self.creation_date = creation_date
 
-
+#Using for validation
 class NotebookSchema(ma.Schema):
     id = fields.Integer()
     title = fields.String(required=True)
