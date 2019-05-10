@@ -5,9 +5,6 @@ import { connect } from 'react-redux';
 import { userActions } from '../_actions';
 
 class HomePage extends React.Component {
-    componentDidMount() {
-        
-    }
 
     render() {
         const { user } = this.props;

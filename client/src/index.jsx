@@ -7,6 +7,7 @@ import { App } from './App';
 
 
 render(
+    // Cover app Component with <Provider> to give access to the Redux Store
     <Provider store={store}>
         <App />
     </Provider>,

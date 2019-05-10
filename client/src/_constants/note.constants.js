@@ -1,0 +1,5 @@
+export const noteConstants = {
+    NOTE_GET_REQUEST: 'NOTE_REQUEST',
+    NOTE_GET_SUCCESS: 'NOTE_SUCCESS',
+    NOTE_GET_FAILURE: 'NOTE_FAILURE'
+}
