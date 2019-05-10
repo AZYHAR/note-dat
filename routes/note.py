@@ -22,6 +22,7 @@ class NoteResource(Resource):
         return {'status': 'success', 'data': notes}, 200
 
     #POST REQUEST (Adding note to server)
+    @jwt_required
     def post(self):
         #geting data from fron-end 
         json_data = request.get_json(force=True)
@@ -33,12 +34,15 @@ class NoteResource(Resource):
         if errors:
             return errors, 422
 
+        user_id = get_jwt_identity()
+
         #matching new note data by fields
         new_note = Note(
             title = data['title'],
             body = data['body'],
             creation_date = datetime.datetime.now(),
-            notebook_id = data['notebook_id']
+            notebook_id = data['notebook_id'],
+            user_id=user_id
         )
 
         #submitting note to database
