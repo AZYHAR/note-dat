@@ -70,7 +70,7 @@ class UserLogin(Resource):
         
         #check if login user entered right password
         if UserModel.verify_hash(data['password'], current_user.password):
-
+          
             #add user_id to second part of token = payload
             access_token = create_access_token(identity = current_user.id)
             refresh_token = create_refresh_token(identity = current_user.id)

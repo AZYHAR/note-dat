@@ -84,8 +84,9 @@ class NotebookResource(Resource):
         
         if errors:
             return errors, 422
-        
-        notebook = Notebook.query.filter_by(id=data['id']).delete()
+
+        notebook = Notebook.query.filter_by(id=data['id']).first()
+        db.session.delete(notebook)
         db.session.commit()
 
         #get json from pyton object
