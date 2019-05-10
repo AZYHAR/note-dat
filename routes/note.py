@@ -2,6 +2,7 @@ from flask import request
 from flask_restful import Resource
 from models.db import db
 from models.note import Note, NoteSchema
+from flask_jwt_extended import (jwt_required, get_jwt_identity)
 import datetime
 
 #creating schema for many notes and for one
@@ -12,10 +13,11 @@ notes_schema = NoteSchema(many=True)
 #Created 4 Endpoints GET, POST, PUT, DELETE
 class NoteResource(Resource):
     #GET REQUEST (Getting Data from server)
+    @jwt_required
     def get(self):
-        #(??)why do we get all if we need only one to load / or we are loading all together
-        #then we should get all by id of notebook 
-        notes = Note.query.all()
+        user_id = get_jwt_identity()
+
+        notes = Note.filter_by_user_id(user_id)
         notes = notes_schema.dump(notes).data
         return {'status': 'success', 'data': notes}, 200
 
@@ -47,8 +49,9 @@ class NoteResource(Resource):
         result = note_schema.dump(new_note).data
 
         return { "status": 'success', 'data': result }, 201
-
+ 
     #PUT REQUEST (Updating data on the server)
+    @jwt_required
     def put(self):
         #geting data from fron-end 
         json_data = request.get_json(force=True)
@@ -75,6 +78,7 @@ class NoteResource(Resource):
         return { "status": "success", "data": result }, 201
 
     #DELETE REQUEST (DELETE data from the server)
+    @jwt_required
     def delete(self):
         json_data = request.get_json(force=True)
         if not json_data:

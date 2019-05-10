@@ -14,6 +14,14 @@ class Note(db.Model):
     notebook_id = db.Column(db.Integer, db.ForeignKey('notebooks.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 
+    @classmethod
+    def filter_by_user_id(cls, user_id):
+        return cls.query.filter_by(user_id = user_id).all()
+    
+    @classmethod
+    def filter_by_notebook_id(cls, notebook_id):
+        return cls.query.filter_by(notebook_id = notebook_id).all()
+
 #Using for validation
 class NoteSchema(ma.Schema):
     id = fields.Integer()

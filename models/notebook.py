@@ -13,9 +13,9 @@ class Notebook(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     notes = db.relationship("Note", cascade="all,delete", backref = "notebooks")
     
-    def __init__(self, title, creation_date):
-        self.title = title
-        self.creation_date = creation_date
+    @classmethod
+    def filter_by_user_id(cls, user_id):
+        return cls.query.filter_by(user_id = user_id).all()
 
 #Using for validation
 class NotebookSchema(ma.Schema):
