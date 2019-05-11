@@ -3,14 +3,17 @@ import { userService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
 
+// We wrapped all Actions creators for easier accessing them in other files
 export const userActions = {
     login,
     logout,
     signup
 };
 
+// There are 3 Actions Creators for User Actions
 function login(email, password) {
     return dispatch => {
+        // send request
         dispatch(request({ email }));
 
         userService.login(email, password)
@@ -26,6 +29,7 @@ function login(email, password) {
             );
     };
 
+    // Sub Actions Creators that are nested
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
@@ -48,6 +52,7 @@ function signup(email, password, name) {
             );
     };
 
+    // Sub Actions Creators that are nested
     function request(user) { return { type: userConstants.SIGNUP_REQUEST, user } }
     function success(user) { return { type: userConstants.SIGNUP_SUCCESS, user } }
     function failure(error) { return { type: userConstants.SIGNUP_FAILURE, error } }

@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 
 import { userActions } from '../_actions';
 
+// The login page component renders a login form with username and password fields. 
+// It displays validation messages for invalid fields when the user attempts to submit the form. 
+// In the constructor() function the userActions.logout() redux action is dispatched which logs the user out if they're logged in, 
+// this enables the login page to also be used as the logout page.
 class LoginPage extends React.Component {
     constructor(props) {
         super(props);
