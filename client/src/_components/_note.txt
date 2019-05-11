@@ -1,0 +1,1 @@
+The _components folder contains shared React components that can be used anywhere in the application.

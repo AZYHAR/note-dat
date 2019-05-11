@@ -12,7 +12,8 @@ import { SignUpPage } from '../SignUpPage';
 class App extends React.Component {
     constructor(props) {
         super(props);
-
+        
+        // Giving all the data to the store
         const { dispatch } = this.props;
         history.listen((location, action) => {
             // clear alert on location change

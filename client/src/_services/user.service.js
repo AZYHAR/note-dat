@@ -2,11 +2,15 @@ import config from 'config';
 import { authHeader } from '../_helpers';
 import axios from 'axios';
 
+// The service methods are exported via the userService object 
 export const userService = {
     login,
     logout,
     signup
 };
+
+// Encapsulates all backend api calls for performing CRUD operations on user data, 
+// as well as logging and out of the example application. 
 
 function login(email, password) {
     return axios.post('/api/auth/login', { email, password })

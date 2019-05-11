@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { userActions } from '../_actions';
+// The home page component is displayed after signing in to the application, 
+// it shows the signed in user's name plus a list of all users in the tutorial application. 
 
 class HomePage extends React.Component {
 
