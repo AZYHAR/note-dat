@@ -2,7 +2,6 @@ from flask import Flask
 from marshmallow import Schema, fields, pre_load, validate
 from models.db import db, ma
 from models.note import Note
-from note import Note
 
 #Creating model for Notebook
 class Notebook(db.Model):
