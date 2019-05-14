@@ -2,6 +2,7 @@ import { userConstants } from '../_constants';
 import { userService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
+import { setAuthHeader } from '../_helpers/auth-header';
 
 export const userActions = {
     login,
@@ -17,6 +18,7 @@ function login(email, password) {
             .then(
                 user => { 
                     dispatch(success(user));
+                    setAuthHeader();
                     history.push('/');
                 },
                 error => {
