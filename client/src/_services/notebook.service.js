@@ -1,19 +1,16 @@
-//Not finished
-import { authHeader } from '../_helpers';
 import axios from 'axios';
 
-export const noteService = {
+export const notebookService = {
     getAll
-}
+};
 
 // I have to specify notebooks by witch user
-
-function get_all() {
-    return axios.get('/notebooks')
-    .then(res => {
-        localStorage.getItem('notebooks', JSON.stringify(res.data));
-
-        return res.data;
-    })
-    
+function getAll() {
+    return axios.get('/api/notebook')
+        .then(res => {
+            return res.data;
+        })
+        .catch(err => {
+            return Promise.reject(err.response.data.message);
+        });
 }
