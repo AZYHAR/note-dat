@@ -3,31 +3,40 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ButtonAppBar from '../_components/NavBar';
 
-// The home page component is displayed after signing in to the application, 
-// it shows the signed in user's name plus a list of all users in the tutorial application. 
+import { notebookActions } from '../_actions';
 
 class HomePage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.props.dispatch(notebookActions.getAllNotebooks());
+    }
 
     render() {
         const { user } = this.props;
+        console.log(this.props);
+        const { notebooks } = this.props.notebooks;
+            
         return (
             <div className="Home">
-            <ButtonAppBar />
-                    <h1>Hi {user.email}!</h1>
-                    <p>You're logged in with React and JWT!!</p>
-                    <p>
-                        <Link to="/login">Logout</Link>
-                    </p>
+                <ButtonAppBar />
+                <p>Length: {notebooks.length}</p>
+                <h1>Hi {user.email}!</h1>
+                <p>You're logged in with React and JWT!!</p>
+                <p>
+                    <Link to="/login">Logout</Link>
+                </p>
             </div>
         );
     }
 }
 
 function mapStateToProps(state) {
-    const { authentication } = state;
+    const { authentication, notebooks } = state;
     const { user } = authentication;
+    
     return {
-        user
+        user,
+        notebooks
     };
 }
 

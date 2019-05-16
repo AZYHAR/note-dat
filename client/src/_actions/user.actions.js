@@ -2,6 +2,7 @@ import { userConstants } from '../_constants';
 import { userService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
+import { setAuthHeader } from '../_helpers/auth-header';
 
 // We wrapped all Actions creators for easier accessing them in other files
 export const userActions = {
@@ -20,6 +21,7 @@ function login(email, password) {
             .then(
                 user => { 
                     dispatch(success(user));
+                    setAuthHeader();
                     history.push('/');
                 },
                 error => {
