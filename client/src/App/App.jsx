@@ -1,4 +1,5 @@
 import React from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -24,7 +25,8 @@ class App extends React.Component {
     render() {
         const { alert } = this.props;
         return (
-            <div>
+            <React.Fragment>
+                <CssBaseline />
                 {alert.message &&
                     <div className={`alert ${alert.type}`}>{alert.message}</div>
                 }
@@ -35,7 +37,7 @@ class App extends React.Component {
                         <Route path="/signup" component={SignUpPage} />
                     </div>
                 </Router>
-            </div>
+            </React.Fragment>
         );
     }
 }
