@@ -114,7 +114,6 @@ class NotebookList extends React.Component {
                         <AddIcon className={classes.leftIcon} />
                         Create Notebook
                     </Button>
-                    {notebooks.error && <div>ERROR: {notebooks.error}</div>}
                     <Dialog
                         fullWidth
                         maxWidth='sm'
