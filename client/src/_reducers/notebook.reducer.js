@@ -1,25 +1,32 @@
 import { notebookConstants } from '../_constants';
 
-const initialState = {
-    fetching: false,
-    notebooks: []
-};
-
-export function notebooks(state = initialState, action) {
+export function notebooks(state = {}, action) {
     switch (action.type) {
         case notebookConstants.NOTEBOOK_GETALL_REQUEST:
             return {
-                fetching: true,
-                notebooks: []
+                loading: true
             };
         case notebookConstants.NOTEBOOK_GETALL_SUCCESS:
             return {
-                notebooks: action.notebooks
+                items: action.notebooks
             };
         case notebookConstants.NOTEBOOK_GETALL_FAILURE:
             return {
-                notebooks: []
-            }
+                error: action.error
+            };
+        case notebookConstants.NOTEBOOK_ADD_REQUEST:
+            return {
+                loading: true,
+                items: state.items
+            };
+        case notebookConstants.NOTEBOOK_ADD_SUCCESS:
+            return {
+                items: [...state.items, action.notebook]
+            };
+        case notebookConstants.NOTEBOOK_ADD_FAILURE:
+            return {
+                error: action.error
+            };
         default:
             return state
     }
