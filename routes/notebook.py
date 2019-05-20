@@ -25,7 +25,7 @@ class NotebookResource(Resource):
     def post(self):
         json_data = request.get_json(force=True)
         if not json_data:
-               return {'message': 'No input data provided'}, 400
+            return {'message': 'No input data provided'}, 400
         # Validate and deserialize input
         data, errors = notebook_schema.load(json_data)
         if errors:
@@ -80,7 +80,7 @@ class NotebookResource(Resource):
     def delete(self):
         json_data = request.get_json(force=True)
         if not json_data:
-               return {'message': 'No input data provided'}, 400
+            return {'message': 'No input data provided'}, 400
         
         # Validate and deserialize input
         data, errors = notebook_schema.load(json_data)

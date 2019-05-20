@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import ButtonAppBar from '../_components/NavBar';
+import { NavBar } from '../_components';
 import { NotebookList } from '../_components';
 
 class HomePage extends React.Component {
@@ -14,8 +13,7 @@ class HomePage extends React.Component {
             
         return (
             <div className="Home">
-                <ButtonAppBar />
-                <h1>Hi {user.email}!</h1>
+                <NavBar />
                 <NotebookList/>
             </div>
         );

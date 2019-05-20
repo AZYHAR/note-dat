@@ -3,7 +3,8 @@ import { notebookService } from '../_services/notebook.service';
 import { alertActions } from './alert.actions';
 
 export const notebookActions = {
-    getAllNotebooks
+    getAllNotebooks,
+    addNotebook
 };
 
 function getAllNotebooks() {
@@ -22,7 +23,28 @@ function getAllNotebooks() {
             );
     };
 
-    function request(notebooks) { return { type: notebookConstants.NOTEBOOK_GETALL_REQUEST, notebooks } }
+    function request() { return { type: notebookConstants.NOTEBOOK_GETALL_REQUEST } }
     function success(notebooks) { return { type: notebookConstants.NOTEBOOK_GETALL_SUCCESS, notebooks } }
     function failure(error) { return { type: notebookConstants.NOTEBOOK_GETALL_FAILURE, error } }
+}
+
+function addNotebook(title) {
+    return dispatch => {
+        dispatch(request({}));
+
+        notebookService.addNotebook(title)
+            .then(
+                notebook => {
+                    dispatch(success(notebook.data));
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: notebookConstants.NOTEBOOK_ADD_REQUEST } }
+    function success(notebook) { return { type: notebookConstants.NOTEBOOK_ADD_SUCCESS, notebook } }
+    function failure(error) { return { type: notebookConstants.NOTEBOOK_ADD_FAILURE, error } }
 }

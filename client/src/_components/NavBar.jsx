@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -20,29 +20,49 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
+  logoutButton: {
+    color: '#ffffff',
+    textDecoration: 'none',
+  }
 };
 
-function ButtonAppBar(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit" className={classes.grow}>
-            NoteDat
-          </Typography>
-          <Button color="inherit"><Link to="/login">Logout</Link></Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+class NavBar extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const { classes, user } = this.props;
+
+        return (
+          <div className={classes.root}>
+            <AppBar position="static">
+              <Toolbar>
+                <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" color="inherit" className={classes.grow}>
+                  NoteDat
+                </Typography>
+                <Typography variant="h6" color="inherit" className={classes.grow}>
+                  Hi {user.email}!
+                </Typography>
+                <Button><Link to="/login" className={classes.logoutButton}>Logout</Link></Button>
+              </Toolbar>
+            </AppBar>
+          </div>
+        )
+    }
 }
 
-ButtonAppBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+function mapStateToProps(state) {
+    const { authentication } = state;
+    const { user } = authentication;
+    
+    return {
+        user
+    };
+}
 
-export default withStyles(styles)(ButtonAppBar);
+const connectedNavBar = withStyles(styles)(connect(mapStateToProps)(NavBar));
+export { connectedNavBar as NavBar };
