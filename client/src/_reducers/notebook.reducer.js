@@ -1,4 +1,4 @@
-import { notebookConstants } from '../_constants';
+import { notebookConstants, userConstants } from '../_constants';
 
 export function notebooks(state = {}, action) {
     switch (action.type) {
@@ -27,6 +27,8 @@ export function notebooks(state = {}, action) {
             return {
                 error: action.error
             };
+        case userConstants.LOGOUT:
+            return {};
         default:
             return state
     }

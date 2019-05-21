@@ -1,5 +1,4 @@
-import config from 'config';
-import { authHeader } from '../_helpers';
+import { setAuthHeader } from '../_helpers';
 import axios from 'axios';
 
 // The service methods are exported via the userService object 
@@ -42,4 +41,5 @@ function signup(email, password, name) {
 function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
+    setAuthHeader();
 }
