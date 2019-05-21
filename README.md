@@ -23,8 +23,8 @@ pip install -r requirements.txt
 
 #### Run migrations:
 ```
-flask db migrate
-flask db upgrade
+python migrate.py db migrate
+python migrate.py db upgrade
 ```
 
 #### Start local server:
