@@ -1,5 +1,6 @@
 import { setAuthHeader } from '../_helpers';
 import axios from 'axios';
+import { setInterceptors } from '../_helpers/axios.interceptor';
 
 // The service methods are exported via the userService object 
 export const userService = {
@@ -15,6 +16,8 @@ function login(email, password) {
     return axios.post('/api/auth/login', { email, password })
         .then(res => {
             localStorage.setItem('user', JSON.stringify(res.data));
+            //setAuthHeader();
+            setInterceptors();
 
             return res.data;
         })
@@ -29,6 +32,7 @@ function signup(email, password, name) {
     return axios.post('/api/auth/signup', { email, password, name })
         .then(res => {
             localStorage.setItem('user', JSON.stringify(res.data));
+            setInterceptors();
 
             return res.data;
         })
