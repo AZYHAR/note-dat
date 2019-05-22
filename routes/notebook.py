@@ -78,17 +78,10 @@ class NotebookResource(Resource):
     #DELETE REQUEST (DELETE data from the server)
     @jwt_required
     def delete(self):
-        json_data = request.get_json(force=True)
-        if not json_data:
-            return {'message': 'No input data provided'}, 400
-        
-        # Validate and deserialize input
-        data, errors = notebook_schema.load(json_data)
-        
-        if errors:
-            return errors, 422
+        if 'id' not in request.args:
+            return {'message': 'Required argument is missing'}, 400
 
-        notebook = Notebook.query.filter_by(id=data['id']).first()
+        notebook = Notebook.query.filter_by(id=request.args.get('id')).first()
         db.session.delete(notebook)
         db.session.commit()
 

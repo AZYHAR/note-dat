@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import FormControl from '@material-ui/core/FormControl';
@@ -14,6 +15,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 
 import { notebookActions } from '../_actions';
@@ -41,7 +46,7 @@ const styles = theme => ({
         marginRight: theme.spacing.unit,
     },
     spinner: {
-        display: 'flex', 
+        display: 'flex',
         justifyContent: 'center',
         marginTop: theme.spacing.unit,
     },
@@ -54,11 +59,14 @@ class NotebookList extends React.Component {
 
         this.state = {
             dialogOpen: false,
+            menuAnchor: null,
+            notebookId: null,
             title: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleCreateNoteBook = this.handleCreateNoteBook.bind(this);
+        this.handleDeleteNoteBook = this.handleDeleteNoteBook.bind(this);
     }
 
     handleChange(e) {
@@ -86,16 +94,47 @@ class NotebookList extends React.Component {
         }
     };
 
+    handleOpenMenu = (id, event) => {
+        this.setState({ menuAnchor: event.currentTarget });
+        this.setState({ notebookId: id });
+    };
+
+    handleCloseMenu = () => {
+        this.setState({ menuAnchor: null });
+        this.setState({ notebookId: null });
+    };
+
+    handleDeleteNoteBook(e) {
+        e.preventDefault();
+
+        const { dispatch } = this.props;
+        const { notebookId } = this.state;
+
+        this.setState({ menuAnchor: null });
+        this.setState({ notebookId: null });
+        dispatch(notebookActions.deleteNotebook(notebookId));
+    };
+
     render() {
         const { notebooks } = this.props;
         const { classes } = this.props;
-        const { title } = this.state;
+        const { title, menuAnchor } = this.state;
         const notebookList = [];
         if (notebooks.items) {
             notebooks.items.forEach((notebook) => {
                 notebookList.push(
                     <ListItem key={notebook.id} button className={classes.listItem}>
                         <ListItemText primary={notebook.title} />
+                        <ListItemSecondaryAction>
+                            <IconButton
+                                aria-label="Menu"
+                                aria-owns={menuAnchor ? 'notebook-menu' : undefined}
+                                aria-haspopup="true"
+                                onClick={this.handleOpenMenu.bind(this, notebook.id)}
+                            >
+                                <MoreVertIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
                     </ListItem>
                 );
             });
@@ -106,7 +145,7 @@ class NotebookList extends React.Component {
         } else {
             notebookListEmpty = false;
         }
-        
+
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
@@ -140,7 +179,17 @@ class NotebookList extends React.Component {
                     <List className={classes.list}>
                         {notebookList}
                     </List>
-                    {notebookListEmpty && 
+                    <Menu
+                        id="notebook-menu"
+                        anchorEl={menuAnchor}
+                        open={Boolean(menuAnchor)}
+                        onClose={this.handleCloseMenu}
+                        disableAutoFocusItem={true}
+                    >
+                        <MenuItem onClick={this.handleCloseMenu}>Rename</MenuItem>
+                        <MenuItem onClick={this.handleDeleteNoteBook}>Delete</MenuItem>
+                    </Menu>
+                    {notebookListEmpty &&
                         <div>
                             <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
                                 You don't have any notebooks yet.
@@ -158,7 +207,7 @@ class NotebookList extends React.Component {
 
 function mapStateToProps(state) {
     const { notebooks } = state;
-    
+
     return {
         notebooks
     };
