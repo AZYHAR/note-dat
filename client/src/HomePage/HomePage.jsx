@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { NavBar } from '../_components';
 import { NotebookList } from '../_components';
+import { NoteList } from '../_components';
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class HomePage extends React.Component {
             <div className="Home">
                 <NavBar />
                 <NotebookList/>
+                <NoteList />
             </div>
         );
     }
