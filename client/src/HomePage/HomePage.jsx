@@ -9,8 +9,8 @@ class HomePage extends React.Component {
     }
 
     render() {
-        const { user } = this.props;
-            
+        const { user, dispatch } = this.props;
+
         return (
             <div className="Home">
                 <NavBar />
