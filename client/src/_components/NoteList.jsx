@@ -20,7 +20,7 @@ import { noteActions } from '../_actions';
 
 const styles = theme => ({
     container: {
-        width: '20%',
+        width: '100%',
         margin: theme.spacing.unit,
         alignItems: 'center',
         padding: 0,
@@ -58,7 +58,7 @@ class NoteList extends React.Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleCreateNoteBook = this.handleCreateNote.bind(this);
+        this.handleCreateNote = this.handleCreateNote.bind(this);
     }
 
     handleChange(e) {
@@ -92,7 +92,7 @@ class NoteList extends React.Component {
         const { title } = this.state;
         const noteList = [];
         if (notes.items) {
-            notes.items.forEach((noteb) => {
+            notes.items.forEach((note) => {
                 noteList.push(
                     <ListItem key={note.id} button className={classes.listItem}>
                         <ListItemText primary={note.title} />
@@ -121,9 +121,9 @@ class NoteList extends React.Component {
                         onClose={this.handleCloseDialog}
                         aria-labelledby="form-dialog-title"
                     >
-                        <DialogTitle id="form-dialog-title">Create Notebook</DialogTitle>
+                        <DialogTitle id="form-dialog-title">Create Note</DialogTitle>
                         <DialogContent>
-                            <form onSubmit={this.handleCreateNoteBook}>
+                            <form onSubmit={this.handleCreateNote}>
                                 <FormControl margin="normal" fullWidth>
                                     <InputLabel htmlFor="title">Title</InputLabel>
                                     <Input id="title" name="title" value={title} onChange={this.handleChange} autoFocus />

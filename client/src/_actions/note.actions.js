@@ -1,5 +1,6 @@
 import { noteConstants } from '../_constants/note.constants';
-import { noteService } from '../_services'
+import { noteService } from '../_services';
+import { alertActions } from './alert.actions';
 
 // We wrapped all Actions creators for easier accessing them in other files
 export const noteActions = {

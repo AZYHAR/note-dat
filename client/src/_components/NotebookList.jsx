@@ -20,7 +20,7 @@ import { notebookActions } from '../_actions';
 
 const styles = theme => ({
     container: {
-        width: '20%',
+        width: '100%',
         margin: theme.spacing.unit,
         alignItems: 'center',
         padding: 0,
