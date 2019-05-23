@@ -13,6 +13,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -34,10 +36,16 @@ const styles = theme => ({
         height: '100%',
         padding: theme.spacing.unit,
     },
+    menuButton: {
+        display: 'none',
+    },
     listItem: {
         fontSize: '1em',
         marginTop: theme.spacing.unit,
         boxShadow: '0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)',
+        '&:hover $menuButton': {
+            display: 'inline-flex',
+        }
     },
     button: {
         width: '100%',
@@ -50,6 +58,9 @@ const styles = theme => ({
         justifyContent: 'center',
         marginTop: theme.spacing.unit,
     },
+    redText: {
+        color: 'red',
+    }
 });
 
 class NotebookList extends React.Component {
@@ -58,9 +69,10 @@ class NotebookList extends React.Component {
         this.props.dispatch(notebookActions.getAllNotebooks());
 
         this.state = {
-            dialogOpen: false,
+            addDialogOpen: false,
+            deleteDialogOpen: false,
             menuAnchor: null,
-            notebookId: null,
+            notebookIdForDeletion: null,
             title: ''
         };
 
@@ -74,12 +86,12 @@ class NotebookList extends React.Component {
         this.setState({ [name]: value });
     }
 
-    handleOpenDialog = () => {
-        this.setState({ dialogOpen: true });
+    handleOpenAddDialog = () => {
+        this.setState({ addDialogOpen: true });
     };
 
-    handleCloseDialog = () => {
-        this.setState({ dialogOpen: false });
+    handleCloseAddDialog = () => {
+        this.setState({ addDialogOpen: false });
     };
 
     handleCreateNoteBook(e) {
@@ -88,7 +100,7 @@ class NotebookList extends React.Component {
         const { title } = this.state;
         const { dispatch } = this.props;
         if (title) {
-            this.setState({ dialogOpen: false });
+            this.setState({ addDialogOpen: false });
             this.setState({ title: '' });
             dispatch(notebookActions.addNotebook(title));
         }
@@ -96,23 +108,34 @@ class NotebookList extends React.Component {
 
     handleOpenMenu = (id, event) => {
         this.setState({ menuAnchor: event.currentTarget });
-        this.setState({ notebookId: id });
+        this.setState({ notebookIdForDeletion: id });
     };
 
     handleCloseMenu = () => {
         this.setState({ menuAnchor: null });
-        this.setState({ notebookId: null });
+        this.setState({ notebookIdForDeletion: null });
+    };
+
+    handleOpenDeleteDialog = () => {
+        this.setState({ deleteDialogOpen: true });
+    };
+
+    handleCloseDeleteDialog = () => {
+        this.setState({ deleteDialogOpen: false });
+        this.setState({ menuAnchor: null });
+        this.setState({ notebookIdForDeletion: null });
     };
 
     handleDeleteNoteBook(e) {
         e.preventDefault();
 
         const { dispatch } = this.props;
-        const { notebookId } = this.state;
+        const { notebookIdForDeletion } = this.state;
 
+        this.setState({ deleteDialogOpen: false });
         this.setState({ menuAnchor: null });
-        this.setState({ notebookId: null });
-        dispatch(notebookActions.deleteNotebook(notebookId));
+        this.setState({ notebookIdForDeletion: null });
+        dispatch(notebookActions.deleteNotebook(notebookIdForDeletion));
     };
 
     render() {
@@ -123,13 +146,20 @@ class NotebookList extends React.Component {
         if (notebooks.items) {
             notebooks.items.forEach((notebook) => {
                 notebookList.push(
-                    <ListItem key={notebook.id} button className={classes.listItem}>
+                    <ListItem 
+                        key={notebook.id}
+                        button
+                        classes={{
+                            container: classes.listItem
+                        }}
+                    >
                         <ListItemText primary={notebook.title} />
                         <ListItemSecondaryAction>
                             <IconButton
                                 aria-label="Menu"
                                 aria-owns={menuAnchor ? 'notebook-menu' : undefined}
                                 aria-haspopup="true"
+                                className={classes.menuButton}
                                 onClick={this.handleOpenMenu.bind(this, notebook.id)}
                             >
                                 <MoreVertIcon />
@@ -149,25 +179,25 @@ class NotebookList extends React.Component {
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
-                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenDialog}>
+                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
                         <AddIcon className={classes.leftIcon} />
                         Create Notebook
                     </Button>
                     <Dialog
                         fullWidth
                         maxWidth='sm'
-                        open={this.state.dialogOpen}
-                        onClose={this.handleCloseDialog}
-                        aria-labelledby="form-dialog-title"
+                        open={this.state.addDialogOpen}
+                        onClose={this.handleCloseAddDialog}
+                        aria-labelledby="form-add-dialog-title"
                     >
-                        <DialogTitle id="form-dialog-title">Create Notebook</DialogTitle>
+                        <DialogTitle id="form-add-dialog-title">Create Notebook</DialogTitle>
                         <DialogContent>
                             <form onSubmit={this.handleCreateNoteBook}>
                                 <FormControl margin="normal" fullWidth>
                                     <InputLabel htmlFor="title">Title</InputLabel>
                                     <Input id="title" name="title" value={title} onChange={this.handleChange} autoFocus />
                                 </FormControl>
-                                <Button onClick={this.handleCloseDialog} color="primary">
+                                <Button onClick={this.handleCloseAddDialog} color="primary">
                                     Cancel
                                 </Button>
                                 <Button type="submit" color="primary">
@@ -187,8 +217,31 @@ class NotebookList extends React.Component {
                         disableAutoFocusItem={true}
                     >
                         <MenuItem onClick={this.handleCloseMenu}>Rename</MenuItem>
-                        <MenuItem onClick={this.handleDeleteNoteBook}>Delete</MenuItem>
+                        <MenuItem onClick={this.handleOpenDeleteDialog} className={classes.redText}>Delete</MenuItem>
                     </Menu>
+                    <Dialog
+                        fullWidth
+                        maxWidth='sm'
+                        open={this.state.deleteDialogOpen}
+                        onClose={this.handleCloseDeleteDialog}
+                        aria-labelledby="delete-dialog-title"
+                        aria-describedby="delete-dialog-description"
+                        >
+                        <DialogTitle id="delete-dialog-title">{"Are you sure you want to delete this notebook?"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="delete-dialog-description">
+                            Warning: This will delete all notes associated with this notebook.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleCloseDeleteDialog} color="primary">
+                            Cancel
+                            </Button>
+                            <Button onClick={this.handleDeleteNoteBook} className={classes.redText} color="primary">
+                            Delete
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                     {notebookListEmpty &&
                         <div>
                             <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
