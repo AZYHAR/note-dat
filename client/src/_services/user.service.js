@@ -38,6 +38,7 @@ function signup(email, password, name) {
         })
         .catch(err => {
             logout();
+            console.log(err);
             return Promise.reject(err.response.data.message);
         });
 }

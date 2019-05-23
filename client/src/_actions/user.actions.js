@@ -1,4 +1,4 @@
-import { userConstants } from '../_constants';
+import { userConstants, alertConstants } from '../_constants';
 import { userService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
@@ -21,6 +21,7 @@ function login(email, password) {
             .then(
                 user => { 
                     dispatch(success(user));
+                    dispatch(alertActions.success("Welcome"));
                     setAuthHeader();
                     history.push('/');
                 },
@@ -45,6 +46,7 @@ function signup(email, password, name) {
             .then(
                 user => { 
                     dispatch(success(user));
+                    dispatch(alertActions.success("Welcome"));
                     history.push('/');
                 },
                 error => {

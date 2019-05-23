@@ -24,8 +24,8 @@ class HomePage extends React.Component {
     }
 
     render() {
-        const { user } = this.props;  
-        const { classes } = this.props;  
+        const { user, dispatch, classes } = this.props;
+
         return (
             <div className={classes.root}>
                 <NavBar />
