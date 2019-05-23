@@ -15,8 +15,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
 
 import { noteActions } from '../_actions';
+
+const qs = require('query-string');
 
 const styles = theme => ({
     container: {
@@ -87,19 +90,24 @@ class NoteList extends React.Component {
     };
 
     render() {
-        const { notes } = this.props;
-        const { classes } = this.props;
+        const { notes, classes, location } = this.props;
         const { title } = this.state;
+        console.log(location);
+        const notebook_id = qs.parse(location.search).nb;
+        console.log(notebook_id);
         const noteList = [];
         if (notes.items) {
             notes.items.forEach((note) => {
-                noteList.push(
-                    <ListItem key={note.id} button className={classes.listItem}>
-                        <ListItemText primary={note.title} />
-                    </ListItem>
-                );
+                if(note.notebook_id == notebook_id)    {
+                    noteList.push(
+                        <ListItem key={note.id} button className={classes.listItem}>
+                            <ListItemText primary={note.title} />
+                        </ListItem>
+                    );
+                }
             });
         }
+
         let noteListEmpty;
         if (!notes.loading && !noteList.length) {
             noteListEmpty = true;
@@ -164,5 +172,5 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedNotesList = withStyles(styles)(connect(mapStateToProps)(NoteList));
+const connectedNotesList = withStyles(styles)(connect(mapStateToProps)(withRouter(NoteList)));
 export { connectedNotesList as NoteList };
