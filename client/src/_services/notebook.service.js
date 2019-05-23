@@ -1,3 +1,4 @@
+import { setAuthHeader } from '../_helpers';
 import axios from 'axios';
 
 export const notebookService = {
