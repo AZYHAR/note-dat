@@ -27,6 +27,19 @@ export function notebooks(state = {}, action) {
             return {
                 error: action.error
             };
+        case notebookConstants.NOTEBOOK_DELETE_REQUEST:
+            return {
+                loading: true,
+                items: state.items
+            };
+        case notebookConstants.NOTEBOOK_DELETE_SUCCESS:
+            return {
+                items: state.items.filter(item => item.id != action.notebook.id)
+            };
+        case notebookConstants.NOTEBOOK_DELETE_FAILURE:
+            return {
+                error: action.error
+            };
         case userConstants.LOGOUT:
             return {};
         default:

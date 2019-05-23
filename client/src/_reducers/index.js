@@ -3,14 +3,13 @@ import { combineReducers } from 'redux';
 import { authentication } from './authentication.reducer';
 import { alert } from './alert.reducer';
 import { notebooks } from './notebook.reducer';
-
-import { LOGOUT } from '../_constants/user.constants';
-
+import { notes } from './note.reducer';
 
 const rootReducer = combineReducers({
   authentication,
   alert,
-  notebooks
+  notebooks,
+  notes
 });
 
 export default rootReducer;

@@ -3,6 +3,7 @@ from flask_restful import Resource
 from models.user import UserModel, UserSchema, RevokedTokenModel
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 
+
 #creating schema for many users and for one
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -119,8 +120,8 @@ class TokenRefresh(Resource):
     @jwt_refresh_token_required
     def post(self):
         #get identity from payload(user_id)
-        current_user = get_jwt_identity()
-        access_token = create_access_token(identity = current_user.id)
+        user_id = get_jwt_identity()
+        access_token = create_access_token(identity = user_id)
         
         return {
             'access_token': access_token
