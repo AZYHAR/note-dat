@@ -4,7 +4,8 @@ import { alertActions } from './alert.actions';
 
 export const notebookActions = {
     getAllNotebooks,
-    addNotebook
+    addNotebook,
+    deleteNotebook
 };
 
 function getAllNotebooks() {
@@ -47,4 +48,25 @@ function addNotebook(title) {
     function request() { return { type: notebookConstants.NOTEBOOK_ADD_REQUEST } }
     function success(notebook) { return { type: notebookConstants.NOTEBOOK_ADD_SUCCESS, notebook } }
     function failure(error) { return { type: notebookConstants.NOTEBOOK_ADD_FAILURE, error } }
+}
+
+function deleteNotebook(id) {
+    return dispatch => {
+        dispatch(request({}));
+
+        notebookService.deleteNotebook(id)
+            .then(
+                notebook => {
+                    dispatch(success(notebook.data));
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: notebookConstants.NOTEBOOK_DELETE_REQUEST } }
+    function success(notebook) { return { type: notebookConstants.NOTEBOOK_DELETE_SUCCESS, notebook } }
+    function failure(error) { return { type: notebookConstants.NOTEBOOK_DELETE_FAILURE, error } }
 }
