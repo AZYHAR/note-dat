@@ -30,10 +30,9 @@ const styles = theme => ({
         width: '100%',
         margin: theme.spacing.unit,
         alignItems: 'center',
-        padding: 0,
+        paddingRight: theme.spacing.unit,
     },
     paperContainer: {
-        height: '100%',
         padding: theme.spacing.unit,
     },
     menuButton: {
