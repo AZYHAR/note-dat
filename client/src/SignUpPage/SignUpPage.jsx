@@ -82,7 +82,7 @@ class SignUpPage extends React.Component {
         }
         
     }
-
+  
     render() {
         const { signingUp, classes, dispatch } = this.props;
         const { username, password, name, password_confirm, submitted } = this.state;
