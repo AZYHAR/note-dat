@@ -15,7 +15,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { noteActions } from '../_actions';
 
@@ -50,6 +50,10 @@ const styles = theme => ({
     },
 });
 
+function ListItemLink(props) {
+    return <ListItem button component={Link} {...props} />;
+}
+
 class NoteList extends React.Component {
     constructor(props) {
         super(props);
@@ -71,11 +75,11 @@ class NoteList extends React.Component {
 
     handleOpenDialog = () => {
         this.setState({ dialogOpen: true });
-    };
+    }
 
     handleCloseDialog = () => {
         this.setState({ dialogOpen: false });
-    };
+    }
 
 
     handleCreateNote(e) {
@@ -88,22 +92,33 @@ class NoteList extends React.Component {
             this.setState({ title: '' });
             dispatch(noteActions.addNote(title));
         }
-    };
+    }
+
+    addParameter(location, id){
+        const query = qs.parse(location.search);
+        query.n = id;
+        return qs.stringify(query);
+    }
 
     render() {
         const { notes, classes, location } = this.props;
         const { title } = this.state;
-        console.log(location);
         const notebook_id = qs.parse(location.search).nb;
-        console.log(notebook_id);
         const noteList = [];
         if (notes.items) {
             notes.items.forEach((note) => {
                 if(note.notebook_id == notebook_id)    {
                     noteList.push(
-                        <ListItem key={note.id} button className={classes.listItem}>
+                        <ListItemLink 
+                            key={note.id} 
+                            button 
+                            className={classes.listItem}
+                            to = {{ pathname: location.pathname,
+                                    search: this.addParameter(location, note.id)    
+                            }}    
+                        >
                             <ListItemText primary={note.title} />
-                        </ListItem>
+                        </ListItemLink>
                     );
                 }
             });
@@ -119,7 +134,7 @@ class NoteList extends React.Component {
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
-                    <Button variant="contained" color="default" className={classes.button}>
+                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenDialog}>
                         <AddIcon className={classes.leftIcon} />
                         Create Note
                     </Button>
