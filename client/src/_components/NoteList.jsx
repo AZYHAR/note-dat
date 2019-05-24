@@ -77,6 +77,7 @@ class NoteList extends React.Component {
         this.setState({ dialogOpen: false });
     };
 
+
     handleCreateNote(e) {
         e.preventDefault();
 
@@ -172,5 +173,5 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedNotesList = withStyles(styles)(connect(mapStateToProps)(withRouter(NoteList)));
+const connectedNotesList = withRouter(connect(mapStateToProps)(withStyles(styles)(NoteList)));
 export { connectedNotesList as NoteList };

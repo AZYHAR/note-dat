@@ -66,6 +66,10 @@ const styles = theme => ({
     }
 });
 
+function ListItemLink(props) {
+    return <ListItem button component={Link} {...props} />;
+}
+
 class NotebookList extends React.Component {
     constructor(props) {
         super(props);
@@ -152,17 +156,15 @@ class NotebookList extends React.Component {
         if (notebooks.items) {
             notebooks.items.forEach((notebook) => {
                 notebookList.push(
-                    <Link to={{ 
-                        pathname: location.pathname,
-                        search: this.addParameter(location, notebook.id) 
+                    <ListItemLink
+                    key={notebook.id}
+                    classes={{
+                        container: classes.listItem
+                    }}
+                        to={{ 
+                            pathname: location.pathname,
+                            search: this.addParameter(location, notebook.id) 
                     }}> 
-                        <ListItem 
-                            key={notebook.id}
-                            button
-                            classes={{
-                                container: classes.listItem
-                            }}
-                        >
                             <ListItemText primary={notebook.title} />
                             <ListItemSecondaryAction>
                                 <IconButton
@@ -175,8 +177,7 @@ class NotebookList extends React.Component {
                                     <MoreVertIcon />
                                 </IconButton>
                             </ListItemSecondaryAction>
-                        </ListItem>
-                    </Link>
+                    </ListItemLink>
                 );
             });
         }
@@ -277,5 +278,5 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedNotebooksList = withStyles(styles)(connect(mapStateToProps)(withRouter(NotebookList)));
+const connectedNotebooksList = withRouter(connect(mapStateToProps)(withStyles(styles)(NotebookList)));
 export { connectedNotebooksList as NotebookList };
