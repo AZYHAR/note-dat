@@ -45,7 +45,7 @@ class NavBar extends React.Component {
                   NoteDat
                 </Typography>
                 <Typography variant="h6" color="inherit" className={classes.grow}>
-                  Hi {user.email}!
+                  Hi {user.name}!
                 </Typography>
                 <Button><Link to="/login" className={classes.logoutButton}>Logout</Link></Button>
               </Toolbar>
