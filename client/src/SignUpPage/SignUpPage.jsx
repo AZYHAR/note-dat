@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { userActions } from '../_actions';
+import { userActions, alertActions } from '../_actions';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -9,6 +9,9 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
+import ErrorIcon from "@material-ui/icons/Error";
+import { checkPropTypes } from 'prop-types';
+import { MySnackbarContentWrapperErrors } from '../_components';
 
 const styles = theme => ({
     container: {
@@ -53,9 +56,9 @@ class SignUpPage extends React.Component {
             password: '',
             name: '',
             password_confirm: '',
-            submitted: false
+            submitted: false,
+            error_handle: false
         };
-
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -69,16 +72,21 @@ class SignUpPage extends React.Component {
         e.preventDefault();
 
         this.setState({ submitted: true });
-        const { username, password, name, password_confirm } = this.state;
+        const { username, password, name, password_confirm} = this.state;
         const { dispatch } = this.props;
-        if (username && password && name && password === password_confirm) {
+        if(password === password_confirm){
+            this.setState({error_handle: false});
             dispatch(userActions.signup(username, password, name));
+        } else {
+            this.setState({error_handle: true});
         }
+        
     }
-
+  
     render() {
-        const { signingUp, classes } = this.props;
+        const { signingUp, classes, dispatch } = this.props;
         const { username, password, name, password_confirm, submitted } = this.state;
+
         return (
             <div className={classes.container}>
                 <Paper className={classes.paper}>
@@ -96,12 +104,20 @@ class SignUpPage extends React.Component {
                         </FormControl>
                         <FormControl margin="normal" required fullWidth>
                             <InputLabel htmlFor="password">Password</InputLabel>
-                            <Input id="password" name="password" type="password" value={password} onChange={this.handleChange} />
+                            <Input id="password" name="password" type="password" value={password} onChange={this.handleChange} error = {this.props.error_handle}/>
                         </FormControl>
                         <FormControl margin="normal" required fullWidth>
-                            <InputLabel htmlFor="password_confirm">Password</InputLabel>
-                            <Input id="password_confirm" name="password_confirm" type="password" value={password_confirm} onChange={this.handleChange} />
+                            <InputLabel htmlFor="password_confirm">Confrim Password</InputLabel>
+                            <Input id="password_confirm" name="password_confirm" type="password" value={password_confirm} onChange={this.handleChange} error = {this.state.error_handle}/>
                         </FormControl>
+                        
+                        {this.state.error_handle ?  <MySnackbarContentWrapperErrors
+                            variant="error"
+                            className={classes.margin}
+                            message="Passwords does not match"
+                        /> : <div/>}
+                        
+
                         <Button
                             type="submit"
                             fullWidth
