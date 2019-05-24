@@ -60,8 +60,9 @@ class NoteList extends React.Component {
         this.props.dispatch(noteActions.getAllNotes());
 
         this.state = {
-            dialogOpen: false,
-            title: ''
+            addDialogOpen: false,
+            title: '',
+            body: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -73,24 +74,29 @@ class NoteList extends React.Component {
         this.setState({ [name]: value });
     }
 
-    handleOpenDialog = () => {
-        this.setState({ dialogOpen: true });
+    handleOpenAddDialog = () => {
+        this.setState({ addDialogOpen: true });
     }
 
     handleCloseDialog = () => {
-        this.setState({ dialogOpen: false });
+        this.setState({ addDialogOpen: false });
     }
 
 
     handleCreateNote(e) {
         e.preventDefault();
 
+        //get id of notebook
+        const notebook_id = qs.parse(location.search).nb;
+
         const { title } = this.state;
         const { dispatch } = this.props;
         if (title) {
-            this.setState({ dialogOpen: false });
+            this.setState({ addDialogOpen: false });
             this.setState({ title: '' });
-            dispatch(noteActions.addNote(title));
+            this.setState({ body: '' });
+            //add notebook id
+            dispatch(noteActions.addNote(title, '', notebook_id));
         }
     }
 
@@ -102,7 +108,7 @@ class NoteList extends React.Component {
 
     render() {
         const { notes, classes, location } = this.props;
-        const { title } = this.state;
+        const { title, body } = this.state;
         const notebook_id = qs.parse(location.search).nb;
         const noteList = [];
         if (notes.items) {
@@ -134,14 +140,14 @@ class NoteList extends React.Component {
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
-                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenDialog}>
+                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
                         <AddIcon className={classes.leftIcon} />
                         Create Note
                     </Button>
                     <Dialog
                         fullWidth
                         maxWidth='sm'
-                        open={this.state.dialogOpen}
+                        open={this.state.addDialogOpen}
                         onClose={this.handleCloseDialog}
                         aria-labelledby="form-dialog-title"
                     >
