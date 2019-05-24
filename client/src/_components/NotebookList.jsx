@@ -22,8 +22,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
+import { Link, withRouter } from 'react-router-dom';
 
 import { notebookActions } from '../_actions';
+
+const qs = require('query-string');
 
 const styles = theme => ({
     container: {
@@ -63,6 +66,10 @@ const styles = theme => ({
     }
 });
 
+function ListItemLink(props) {
+    return <ListItem button component={Link} {...props} />;
+}
+
 class NotebookList extends React.Component {
     constructor(props) {
         super(props);
@@ -75,26 +82,22 @@ class NotebookList extends React.Component {
             notebookIdForDeletion: null,
             title: ''
         };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleCreateNoteBook = this.handleCreateNoteBook.bind(this);
-        this.handleDeleteNoteBook = this.handleDeleteNoteBook.bind(this);
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({ [name]: value });
     }
 
     handleOpenAddDialog = () => {
         this.setState({ addDialogOpen: true });
-    };
+    }
 
     handleCloseAddDialog = () => {
         this.setState({ addDialogOpen: false });
-    };
+    }
 
-    handleCreateNoteBook(e) {
+    handleCreateNoteBook = (e) => {
         e.preventDefault();
 
         const { title } = this.state;
@@ -104,29 +107,29 @@ class NotebookList extends React.Component {
             this.setState({ title: '' });
             dispatch(notebookActions.addNotebook(title));
         }
-    };
+    }
 
     handleOpenMenu = (id, event) => {
         this.setState({ menuAnchor: event.currentTarget });
         this.setState({ notebookIdForDeletion: id });
-    };
+    }
 
     handleCloseMenu = () => {
         this.setState({ menuAnchor: null });
         this.setState({ notebookIdForDeletion: null });
-    };
+    }
 
     handleOpenDeleteDialog = () => {
         this.setState({ deleteDialogOpen: true });
-    };
+    }
 
     handleCloseDeleteDialog = () => {
         this.setState({ deleteDialogOpen: false });
         this.setState({ menuAnchor: null });
         this.setState({ notebookIdForDeletion: null });
-    };
+    }
 
-    handleDeleteNoteBook(e) {
+    handleDeleteNoteBook = (e) => {
         e.preventDefault();
 
         const { dispatch } = this.props;
@@ -136,36 +139,45 @@ class NotebookList extends React.Component {
         this.setState({ menuAnchor: null });
         this.setState({ notebookIdForDeletion: null });
         dispatch(notebookActions.deleteNotebook(notebookIdForDeletion));
-    };
+    }
+
+    addParameter(location, id){
+        const query = qs.parse(location.search);
+        query.nb = id;
+        query.n = undefined;
+        return qs.stringify(query);
+    }
 
     render() {
-        const { notebooks } = this.props;
+        const { notebooks, location } = this.props;
         const { classes } = this.props;
         const { title, menuAnchor } = this.state;
         const notebookList = [];
         if (notebooks.items) {
             notebooks.items.forEach((notebook) => {
                 notebookList.push(
-                    <ListItem 
-                        key={notebook.id}
-                        button
-                        classes={{
-                            container: classes.listItem
-                        }}
-                    >
-                        <ListItemText primary={notebook.title} />
-                        <ListItemSecondaryAction>
-                            <IconButton
-                                aria-label="Menu"
-                                aria-owns={menuAnchor ? 'notebook-menu' : undefined}
-                                aria-haspopup="true"
-                                className={classes.menuButton}
-                                onClick={this.handleOpenMenu.bind(this, notebook.id)}
-                            >
-                                <MoreVertIcon />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
+                    <ListItemLink
+                    key={notebook.id}
+                    classes={{
+                        container: classes.listItem
+                    }}
+                        to={{ 
+                            pathname: location.pathname,
+                            search: this.addParameter(location, notebook.id) 
+                    }}> 
+                            <ListItemText primary={notebook.title} />
+                            <ListItemSecondaryAction>
+                                <IconButton
+                                    aria-label="Menu"
+                                    aria-owns={menuAnchor ? 'notebook-menu' : undefined}
+                                    aria-haspopup="true"
+                                    className={classes.menuButton}
+                                    onClick={this.handleOpenMenu.bind(this, notebook.id)}
+                                >
+                                    <MoreVertIcon />
+                                </IconButton>
+                            </ListItemSecondaryAction>
+                    </ListItemLink>
                 );
             });
         }
@@ -266,5 +278,5 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedNotebooksList = withStyles(styles)(connect(mapStateToProps)(NotebookList));
+const connectedNotebooksList = withRouter(connect(mapStateToProps)(withStyles(styles)(NotebookList)));
 export { connectedNotebooksList as NotebookList };
