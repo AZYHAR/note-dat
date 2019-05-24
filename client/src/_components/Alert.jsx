@@ -80,6 +80,25 @@ function MySnackbarContent(props) {
   );
 }
 
+function MySnackbarContentFormErrors(props) {
+  const { classes, className, message, onClose, variant, ...other } = props;
+  const Icon = variantIcon[variant];
+
+  return (
+    <SnackbarContent
+      className={classNames(classes[variant], className)}
+      aria-describedby="client-snackbar"
+      message={
+        <span id="client-snackbar" className={classes.message}>
+          <Icon className={classNames(classes.icon, classes.iconVariant)} />
+          {message}
+        </span>
+      }
+      {...other}
+    />
+  );
+}
+
 MySnackbarContent.propTypes = {
   classes: PropTypes.object.isRequired,
   className: PropTypes.string,
@@ -88,7 +107,8 @@ MySnackbarContent.propTypes = {
   variant: PropTypes.oneOf(["success", "warning", "error", "info"]).isRequired
 };
 
-const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
+export const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
+export const MySnackbarContentWrapperErrors = withStyles(styles1)(MySnackbarContentFormErrors);
 
 const styles2 = theme => ({
   margin: {
