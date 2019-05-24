@@ -29,9 +29,9 @@ class HomePage extends React.Component {
         return (
             <div className={classes.root}>
                 <NavBar />
-                <Grid container spacing={24}>
-                    <Grid item xs={3}><NotebookList className={classes.paper} /></Grid>
-                    <Grid item xs={3}><NoteList className={classes.paper} /></Grid>
+                <Grid container spacing={0}>
+                    <Grid item xs={3}><NotebookList className={classes.paper}/></Grid>
+                    <Grid item xs={3}><NoteList className={classes.paper}/></Grid
                 </Grid>
             </div>
         );
