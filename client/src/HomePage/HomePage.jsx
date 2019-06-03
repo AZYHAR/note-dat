@@ -6,6 +6,7 @@ import { NavBar } from '../_components';
 import { NotebookList } from '../_components';
 import { NoteList } from '../_components';
 import Grid from '@material-ui/core/Grid';
+import { Note } from '../_components';
 
 const styles = theme => ({
     root: {
@@ -32,6 +33,7 @@ class HomePage extends React.Component {
                 <Grid container spacing={0}>
                     <Grid item xs={3}><NotebookList className={classes.paper}/></Grid>
                     <Grid item xs={3}><NoteList className={classes.paper}/></Grid>
+                    <Grid item xs={6}><Note className={classes.paper}/></Grid>
                 </Grid>
             </div>
         );
