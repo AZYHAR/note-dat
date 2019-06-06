@@ -31,19 +31,25 @@ const qs = require('query-string');
 const styles = theme => ({
     container: {
         width: '100%',
-        margin: theme.spacing.unit,
+        height: '100%',
         alignItems: 'center',
-        paddingRight: theme.spacing.unit,
     },
     paperContainer: {
+        height: '100%',
         padding: theme.spacing.unit,
     },
     menuButton: {
         display: 'none',
     },
+    list: {
+        overflow: 'auto',
+        height: '93%',
+        marginTop: theme.spacing.unit,
+        paddingTop: 0,
+    },
     listItem: {
         fontSize: '1em',
-        marginTop: theme.spacing.unit,
+        margin: theme.spacing.unit,
         boxShadow: '0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)',
         '&:hover $menuButton': {
             display: 'inline-flex',
@@ -156,26 +162,27 @@ class NotebookList extends React.Component {
             notebooks.items.forEach((notebook) => {
                 notebookList.push(
                     <ListItemLink
-                    key={notebook.id}
-                    classes={{
-                        container: classes.listItem
-                    }}
+                        key={notebook.id}
+                        classes={{
+                            container: classes.listItem
+                        }}
                         to={{ 
                             pathname: location.pathname,
                             search: this.addParameter(location, notebook.id) 
-                    }}> 
-                            <ListItemText primary={notebook.title} />
-                            <ListItemSecondaryAction>
-                                <IconButton
-                                    aria-label="Menu"
-                                    aria-owns={menuAnchor ? 'notebook-menu' : undefined}
-                                    aria-haspopup="true"
-                                    className={classes.menuButton}
-                                    onClick={this.handleOpenMenu.bind(this, notebook.id)}
-                                >
-                                    <MoreVertIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
+                        }}
+                    > 
+                        <ListItemText primary={notebook.title} />
+                        <ListItemSecondaryAction>
+                            <IconButton
+                                aria-label="Menu"
+                                aria-owns={menuAnchor ? 'notebook-menu' : undefined}
+                                aria-haspopup="true"
+                                className={classes.menuButton}
+                                onClick={this.handleOpenMenu.bind(this, notebook.id)}
+                            >
+                                <MoreVertIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
                     </ListItemLink>
                 );
             });
@@ -217,9 +224,21 @@ class NotebookList extends React.Component {
                             </form>
                         </DialogContent>
                     </Dialog>
-                    <List className={classes.list}>
-                        {notebookList}
-                    </List>
+                    <div className={classes.list}>
+                        <List>
+                            {notebookList}
+                        </List>
+                        {notebookListEmpty &&
+                            <div>
+                                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                                    You don't have any notebooks yet.
+                                </Typography>
+                                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                                    Go ahead and create one!
+                                </Typography>
+                            </div>}
+                        {notebooks.loading && <div className={classes.spinner}><CircularProgress /></div>}
+                    </div>
                     <Menu
                         id="notebook-menu"
                         anchorEl={menuAnchor}
@@ -253,16 +272,6 @@ class NotebookList extends React.Component {
                             </Button>
                         </DialogActions>
                     </Dialog>
-                    {notebookListEmpty &&
-                        <div>
-                            <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-                                You don't have any notebooks yet.
-                            </Typography>
-                            <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-                                Go ahead and create one!
-                            </Typography>
-                        </div>}
-                    {notebooks.loading && <div className={classes.spinner}><CircularProgress /></div>}
                 </Paper>
             </div>
         )

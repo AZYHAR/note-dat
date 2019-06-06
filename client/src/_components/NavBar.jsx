@@ -10,9 +10,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { Link } from 'react-router-dom';
 
 const styles = {
-  root: {
-    flexGrow: 1,
-  },
   grow: {
     flexGrow: 1,
   },
@@ -35,7 +32,6 @@ class NavBar extends React.Component {
         const { classes, user } = this.props;
 
         return (
-          <div className={classes.root}>
             <AppBar position="static">
               <Toolbar>
                 <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
@@ -50,7 +46,6 @@ class NavBar extends React.Component {
                 <Button><Link to="/login" className={classes.logoutButton}>Logout</Link></Button>
               </Toolbar>
             </AppBar>
-          </div>
         )
     }
 }
