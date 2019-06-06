@@ -48,7 +48,15 @@ const styles = theme => ({
     listItem: {
         fontSize: '1em',
         margin: theme.spacing.unit,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        display: 'block',
         boxShadow: '0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)',
+        '&:hover $menuButton': {
+            display: 'inline-flex',
+        }
     },
     button: {
         width: '100%',
@@ -74,6 +82,7 @@ class NoteList extends React.Component {
 
         this.state = {
             addDialogOpen: false,
+            menuAnchor: null,
             title: '',
             body: ''
         };
@@ -95,6 +104,13 @@ class NoteList extends React.Component {
         this.setState({ addDialogOpen: false });
     }
 
+    handleOpenMenu = (id, event) => {
+        this.setState({ menuAnchor: event.currentTarget });
+    }
+
+    handleCloseMenu = () => {
+        this.setState({ menuAnchor: null });
+    }
 
     handleCreateNote(e) {
         e.preventDefault();
@@ -121,7 +137,7 @@ class NoteList extends React.Component {
 
     render() {
         const { notes, classes, location } = this.props;
-        const { title, body } = this.state;
+        const { title, body, menuAnchor } = this.state;
         const notebook_id = qs.parse(location.search).nb;
         const noteList = [];
         if (notes.items) {
@@ -138,12 +154,14 @@ class NoteList extends React.Component {
                                 search: this.addParameter(location, note.id)    
                             }}    
                         >
-                            <ListItemText primary={note.title} />
+                            <ListItemText primary={<Typography noWrap>{note.title}</Typography>}/>
                             <ListItemSecondaryAction>
                             <IconButton
                                 aria-label="Menu"
+                                aria-owns={menuAnchor ? 'note-menu' : undefined}
                                 aria-haspopup="true"
                                 className={classes.menuButton}
+                                onClick={this.handleOpenMenu.bind(this, note.id)}
                             >
                                 <MoreVertIcon />
                             </IconButton>
@@ -206,6 +224,16 @@ class NoteList extends React.Component {
                             </div>}
                         {notes.loading && <div className={classes.spinner}><CircularProgress /></div>}
                     </div>
+                    <Menu
+                        id="note-menu"
+                        anchorEl={menuAnchor}
+                        open={Boolean(menuAnchor)}
+                        onClose={this.handleCloseMenu}
+                        disableAutoFocusItem={true}
+                    >
+                        <MenuItem>Rename</MenuItem>
+                        <MenuItem className={classes.redText}>Delete</MenuItem>
+                    </Menu>
                 </Paper>
             </div>
         )

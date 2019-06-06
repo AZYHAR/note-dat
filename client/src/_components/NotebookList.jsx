@@ -170,8 +170,8 @@ class NotebookList extends React.Component {
                             pathname: location.pathname,
                             search: this.addParameter(location, notebook.id) 
                         }}
-                    > 
-                        <ListItemText primary={notebook.title} />
+                    >
+                        <ListItemText primary={<Typography noWrap>{notebook.title}</Typography>}/>
                         <ListItemSecondaryAction>
                             <IconButton
                                 aria-label="Menu"
