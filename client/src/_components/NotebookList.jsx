@@ -77,8 +77,9 @@ class NotebookList extends React.Component {
         this.state = {
             addDialogOpen: false,
             deleteDialogOpen: false,
+            renameDialogOpen: false,
             menuAnchor: null,
-            notebookIdForDeletion: null,
+            notebookIdSelected: null,
             title: ''
         };
     }
@@ -110,12 +111,22 @@ class NotebookList extends React.Component {
 
     handleOpenMenu = (id, event) => {
         this.setState({ menuAnchor: event.currentTarget });
-        this.setState({ notebookIdForDeletion: id });
+        this.setState({ notebookIdSelected: id });
     }
 
     handleCloseMenu = () => {
         this.setState({ menuAnchor: null });
-        this.setState({ notebookIdForDeletion: null });
+        this.setState({ notebookIdSelected: null });
+    }
+
+    handleOpenRenameDialog = () => {
+        this.setState({ renameDialogOpen: true });
+    }
+
+    handleCloseRenameDialog = () => {
+        this.setState({ renameDialogOpen: false });
+        this.setState({ menuAnchor: null });
+        this.setState({ notebookIdSelected: null });
     }
 
     handleOpenDeleteDialog = () => {
@@ -125,19 +136,35 @@ class NotebookList extends React.Component {
     handleCloseDeleteDialog = () => {
         this.setState({ deleteDialogOpen: false });
         this.setState({ menuAnchor: null });
-        this.setState({ notebookIdForDeletion: null });
+        this.setState({ notebookIdSelected: null });
     }
 
     handleDeleteNoteBook = (e) => {
         e.preventDefault();
 
         const { dispatch } = this.props;
-        const { notebookIdForDeletion } = this.state;
+        const { notebookIdSelected, title } = this.state;
 
         this.setState({ deleteDialogOpen: false });
         this.setState({ menuAnchor: null });
-        this.setState({ notebookIdForDeletion: null });
-        dispatch(notebookActions.deleteNotebook(notebookIdForDeletion));
+        this.setState({ notebookIdSelected: null });
+        this.setState({ title: '' });
+        dispatch(notebookActions.deleteNotebook(notebookIdSelected));
+    }
+
+    handleRenameNotebook = (e) =>   {
+        e.preventDefault();
+        
+        const { dispatch } = this.props;
+        const { notebookIdSelected, title } = this.state;
+        
+        if (title) {
+            this.setState({ renameDialogOpen: false });
+            this.setState({ menuAnchor: null });
+            this.setState({ notebookIdSelected: null });
+            dispatch(notebookActions.renameNotebook(notebookIdSelected, title));
+        }
+        
     }
 
     addParameter(location, id){
@@ -227,7 +254,7 @@ class NotebookList extends React.Component {
                         onClose={this.handleCloseMenu}
                         disableAutoFocusItem={true}
                     >
-                        <MenuItem onClick={this.handleCloseMenu}>Rename</MenuItem>
+                        <MenuItem onClick={this.handleOpenRenameDialog}>Rename</MenuItem>
                         <MenuItem onClick={this.handleOpenDeleteDialog} className={classes.redText}>Delete</MenuItem>
                     </Menu>
                     <Dialog
@@ -237,8 +264,8 @@ class NotebookList extends React.Component {
                         onClose={this.handleCloseDeleteDialog}
                         aria-labelledby="delete-dialog-title"
                         aria-describedby="delete-dialog-description"
-                        >
-                        <DialogTitle id="delete-dialog-title">{"Are you sure you want to delete this notebook?"}</DialogTitle>
+                    >
+                        <DialogTitle id="delete-dialog-title">{"Rename?"}</DialogTitle>
                         <DialogContent>
                             <DialogContentText id="delete-dialog-description">
                             Warning: This will delete all notes associated with this notebook.
@@ -252,6 +279,29 @@ class NotebookList extends React.Component {
                             Delete
                             </Button>
                         </DialogActions>
+                    </Dialog>
+                    <Dialog
+                        fullWidth
+                        maxWidth='sm'
+                        open={this.state.renameDialogOpen}
+                        onClose={this.handleCloseRenameDialog}
+                        aria-labelledby="form-rename-dialog-title"
+                    >
+                        <DialogTitle id="form-rename-dialog-title">Rename Notebook</DialogTitle>
+                        <DialogContent>
+                            <form onSubmit={this.handleRenameNotebook}>
+                                <FormControl margin="normal" fullWidth>
+                                    <InputLabel htmlFor="title">New Title</InputLabel>
+                                    <Input id="title" name="title" value={title} onChange={this.handleChange} autoFocus />
+                                </FormControl>
+                                <Button onClick={this.handleCloseRenameDialog} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button type="submit" color="primary">
+                                    Save
+                                </Button>
+                            </form>
+                        </DialogContent>
                     </Dialog>
                     {notebookListEmpty &&
                         <div>

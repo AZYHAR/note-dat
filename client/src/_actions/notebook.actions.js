@@ -5,7 +5,8 @@ import { alertActions } from './alert.actions';
 export const notebookActions = {
     getAllNotebooks,
     addNotebook,
-    deleteNotebook
+    deleteNotebook,
+    renameNotebook
 };
 
 function getAllNotebooks() {
@@ -69,4 +70,25 @@ function deleteNotebook(id) {
     function request() { return { type: notebookConstants.NOTEBOOK_DELETE_REQUEST } }
     function success(notebook) { return { type: notebookConstants.NOTEBOOK_DELETE_SUCCESS, notebook } }
     function failure(error) { return { type: notebookConstants.NOTEBOOK_DELETE_FAILURE, error } }
+}
+
+function renameNotebook(id, title) {
+    return dispatch => {
+        dispatch(request({}));
+
+        notebookService.renameNotebook(id, title)
+            .then(
+                notebook => {
+                    dispatch(success(notebook.data));
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: notebookConstants.NOTEBOOK_RENAME_REQUEST } }
+    function success(notebook) { return { type: notebookConstants.NOTEBOOK_RENAME_SUCCESS, notebook } }
+    function failure(error) { return { type: notebookConstants.NOTEBOOK_RENAME_FAILURE, error } }
 }
