@@ -142,7 +142,7 @@ class NoteList extends React.Component {
         const noteList = [];
         if (notes.items) {
             notes.items.forEach((note) => {
-                if(note.notebook_id == notebook_id) {
+                if((note.notebook_id == notebook_id) || (notebook_id == "all"))    {
                     noteList.push(
                         <ListItemLink 
                             key={note.id}

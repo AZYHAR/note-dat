@@ -214,6 +214,20 @@ class NotebookList extends React.Component {
                 );
             });
         }
+        notebookList.unshift(
+            <Link
+                key="allNotes"
+                style={{ textDecoration: 'none' }}
+                to={{ 
+                pathname: location.pathname,
+                search: this.addParameter(location, "all")
+            }}>
+                <Button variant="contained" color="default" className={classes.button} onClick={this.handleDisplayAllNotes}>
+                    All Notes
+                </Button>
+            </Link>
+        );
+
         let notebookListEmpty;
         if (!notebooks.loading && !notebookList.length) {
             notebookListEmpty = true;
