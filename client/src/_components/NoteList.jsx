@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import FormControl from '@material-ui/core/FormControl';
@@ -14,6 +15,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, withRouter } from 'react-router-dom';
 
@@ -24,18 +29,34 @@ const qs = require('query-string');
 const styles = theme => ({
     container: {
         width: '100%',
-        margin: theme.spacing.unit,
+        height: '100%',
         alignItems: 'center',
-        padding: 0,
     },
     paperContainer: {
         height: '100%',
         padding: theme.spacing.unit,
     },
+    menuButton: {
+        display: 'none',
+    },
+    list: {
+        overflow: 'auto',
+        height: '93%',
+        marginTop: theme.spacing.unit,
+        paddingTop: 0,
+    },
     listItem: {
         fontSize: '1em',
-        marginTop: theme.spacing.unit,
+        margin: theme.spacing.unit,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        display: 'block',
         boxShadow: '0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12)',
+        '&:hover $menuButton': {
+            display: 'inline-flex',
+        }
     },
     button: {
         width: '100%',
@@ -61,6 +82,7 @@ class NoteList extends React.Component {
 
         this.state = {
             addDialogOpen: false,
+            menuAnchor: null,
             title: '',
             body: ''
         };
@@ -82,6 +104,13 @@ class NoteList extends React.Component {
         this.setState({ addDialogOpen: false });
     }
 
+    handleOpenMenu = (id, event) => {
+        this.setState({ menuAnchor: event.currentTarget });
+    }
+
+    handleCloseMenu = () => {
+        this.setState({ menuAnchor: null });
+    }
 
     handleCreateNote(e) {
         e.preventDefault();
@@ -108,22 +137,35 @@ class NoteList extends React.Component {
 
     render() {
         const { notes, classes, location } = this.props;
-        const { title, body } = this.state;
+        const { title, body, menuAnchor } = this.state;
         const notebook_id = qs.parse(location.search).nb;
         const noteList = [];
         if (notes.items) {
             notes.items.forEach((note) => {
-                if(note.notebook_id == notebook_id)    {
+                if(note.notebook_id == notebook_id) {
                     noteList.push(
                         <ListItemLink 
-                            key={note.id} 
-                            button 
-                            className={classes.listItem}
-                            to = {{ pathname: location.pathname,
-                                    search: this.addParameter(location, note.id)    
+                            key={note.id}
+                            classes={{
+                                container: classes.listItem
+                            }}
+                            to = {{ 
+                                pathname: location.pathname,
+                                search: this.addParameter(location, note.id)    
                             }}    
                         >
-                            <ListItemText primary={note.title} />
+                            <ListItemText primary={<Typography noWrap>{note.title}</Typography>}/>
+                            <ListItemSecondaryAction>
+                            <IconButton
+                                aria-label="Menu"
+                                aria-owns={menuAnchor ? 'note-menu' : undefined}
+                                aria-haspopup="true"
+                                className={classes.menuButton}
+                                onClick={this.handleOpenMenu.bind(this, note.id)}
+                            >
+                                <MoreVertIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
                         </ListItemLink>
                     );
                 }
@@ -167,19 +209,31 @@ class NoteList extends React.Component {
                             </form>
                         </DialogContent>
                     </Dialog>
-                    <List className={classes.list}>
-                        {noteList}
-                    </List>
-                    {noteListEmpty && 
-                        <div>
-                            <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-                                You don't have any notes yet.
-                            </Typography>
-                            <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-                                Go ahead and create one!
-                            </Typography>
-                        </div>}
-                    {notes.loading && <div className={classes.spinner}><CircularProgress /></div>}
+                    <div className={classes.list}>
+                        <List>
+                            {noteList}
+                        </List>
+                        {noteListEmpty && 
+                            <div>
+                                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                                    You don't have any notes yet.
+                                </Typography>
+                                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                                    Go ahead and create one!
+                                </Typography>
+                            </div>}
+                        {notes.loading && <div className={classes.spinner}><CircularProgress /></div>}
+                    </div>
+                    <Menu
+                        id="note-menu"
+                        anchorEl={menuAnchor}
+                        open={Boolean(menuAnchor)}
+                        onClose={this.handleCloseMenu}
+                        disableAutoFocusItem={true}
+                    >
+                        <MenuItem>Rename</MenuItem>
+                        <MenuItem className={classes.redText}>Delete</MenuItem>
+                    </Menu>
                 </Paper>
             </div>
         )
