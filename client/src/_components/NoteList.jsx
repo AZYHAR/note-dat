@@ -82,10 +82,6 @@ class NoteList extends React.Component {
         this.setState({ addDialogOpen: false });
     }
 
-    handleDisplayAllNotes = () =>  {
-        
-    }
-
 
     handleCreateNote(e) {
         e.preventDefault();
