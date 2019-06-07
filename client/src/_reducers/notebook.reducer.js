@@ -40,6 +40,19 @@ export function notebooks(state = {}, action) {
             return {
                 error: action.error
             };
+        case notebookConstants.NOTEBOOK_RENAME_REQUEST:
+            return {
+                loading: true,
+                items: state.items
+            };
+        case notebookConstants.NOTEBOOK_RENAME_SUCCESS:
+            return {
+                items: [...state.items.filter(item => item.id != action.notebook.id), action.notebook]
+            };
+        case notebookConstants.NOTEBOOK_RENAME_FAILURE:
+            return {
+                error: action.error
+            };
         case userConstants.LOGOUT:
             return {};
         default:

@@ -12,12 +12,12 @@ const qs = require('query-string');
 const styles = theme => ({
     container: {
         width: '100%',
-        margin: theme.spacing.unit,
+        height: '100%',
         alignItems: 'center',
-        padding: 0,
     },
     paperContainer: {
         height: '100%',
+        overflow: 'auto',
         padding: theme.spacing.unit,
     },
     emptyPaperContainer: {

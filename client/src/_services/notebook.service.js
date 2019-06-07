@@ -4,10 +4,11 @@ import axios from 'axios';
 export const notebookService = {
     getAll,
     addNotebook,
-    deleteNotebook
+    deleteNotebook,
+    renameNotebook
 };
 
-// I have to specify notebooks by witch user
+
 function getAll() {
     return axios.get('/api/notebook')
         .then(res => {
@@ -34,6 +35,17 @@ function deleteNotebook(id) {
             return res.data;
         })
         .catch(err => {
+            return Promise.reject(err.response.data.message);
+        });
+}
+
+function renameNotebook(id, title)  {
+    return axios.put('/api/notebook', { 'id': id, 'title': title } )
+        .then(res => {
+            return res.data;
+        })
+        .catch(err => {
+            console.log(err.response);
             return Promise.reject(err.response.data.message);
         });
 }
