@@ -3,7 +3,8 @@ import axios from 'axios';
 
 export const noteService = {
     getAll,
-    addNote
+    addNote,
+    updateNote
 };
 
 // (??)Find out how to get from specific notebook
@@ -27,4 +28,20 @@ function addNote(title, body, notebook_id) {
         .catch(err => {
             return Promise.reject(err.response.data.message);
         });
+}
+
+function updateNote(id, title, body, notebook_id){
+    console.log('Service: Updating');
+    return axios.put('/api/note', {
+        'id': id,
+        'title': title,
+        'body': body,
+        'notebook_id': notebook_id
+    })
+    .then(res => {
+        return res.data;
+    })
+    .catch(err => {
+        return Promise.reject(err.response.data.message);
+    })
 }
