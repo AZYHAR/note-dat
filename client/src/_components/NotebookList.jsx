@@ -68,6 +68,10 @@ const styles = theme => ({
     },
     redText: {
         color: 'red',
+    },
+    selected: {
+        color: '#0000ff',
+        background: '#0000ff'
     }
 });
 
@@ -185,18 +189,21 @@ class NotebookList extends React.Component {
         const { classes } = this.props;
         const { title, menuAnchor } = this.state;
         const notebookList = [];
+        const selectedNotebookId = qs.parse(location.search).nb;
         if (notebooks.items) {
             notebooks.items.forEach((notebook) => {
                 notebookList.push(
                     <ListItemLink
                         key={notebook.id}
                         classes={{
-                            container: classes.listItem
+                            container: classes.listItem,
+                            selected: classes.selected
                         }}
                         to={{ 
                             pathname: location.pathname,
                             search: this.addParameter(location, notebook.id) 
                         }}
+                        selected={selectedNotebookId == notebook.id?true:false}
                     >
                         <ListItemText primary={<Typography noWrap>{notebook.title}</Typography>}/>
                         <ListItemSecondaryAction>
