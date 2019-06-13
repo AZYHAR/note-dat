@@ -4,7 +4,8 @@ import axios from 'axios';
 export const noteService = {
     getAll,
     addNote,
-    updateNote
+    updateNote,
+    deleteNote
 };
 
 // (??)Find out how to get from specific notebook
@@ -19,7 +20,7 @@ function getAll() {
         });
 }
 
-function addNote(title, body, notebook_id) {
+function addNote(title, body, notebook_id, notebook_move) {
     return axios.post('/api/note', { 'title': title, 'body' : body, 'notebook_id': notebook_id })
         .then(res => {
             console.log(res.data);
@@ -44,4 +45,15 @@ function updateNote(id, title, body, notebook_id){
     .catch(err => {
         return Promise.reject(err.response.data.message);
     })
+}
+
+function deleteNote(id, title, body) {
+    return axios.delete('/api/note', {params: { 'id': id, 'title': title, 'body': body}})
+        .then(res => {
+            console.log(res.data);
+            return res.data;
+        })
+        .catch(err => {
+            return Promise.reject(err.response.data.message);
+        });
 }

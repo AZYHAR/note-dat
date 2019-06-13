@@ -28,6 +28,19 @@ export function notes(state = {}, action) {
             return {
                 error: action.error
             };
+        case noteConstants.NOTE_DELETE_REQUEST:
+            return {
+                loading: true,
+                items: state.items
+            };
+        case noteConstants.NOTE_DELETE_SUCCESS:
+            return {
+                items: state.items.filter(item => item.id != action.note.id)
+            };
+        case noteConstants.NOTE_DELETE_FAILURE:
+            return {
+                error: action.error
+            };
         case noteConstants.NOTE_UPDATE_REQUEST:
             return Object.assign({}, state)
         case noteConstants.NOTE_UPDATE_SUCCESS:

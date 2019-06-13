@@ -24,7 +24,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, withRouter } from 'react-router-dom';
 
-import { notebookActions } from '../_actions';
+import { notebookActions, alertActions } from '../_actions';
 
 const qs = require('query-string');
 
@@ -68,7 +68,7 @@ const styles = theme => ({
     },
     redText: {
         color: 'red',
-    }
+    },
 });
 
 function ListItemLink(props) {
@@ -106,12 +106,20 @@ class NotebookList extends React.Component {
     handleCreateNoteBook = (e) => {
         e.preventDefault();
 
-        const { title } = this.state;
-        const { dispatch } = this.props;
+        const { title, location, history } = this.state;
+        const { dispatch, notebooks } = this.props;
+
+        const notebook_check_existence = notebooks.items.find(x => x.title === title);
+
         if (title) {
-            this.setState({ addDialogOpen: false });
-            this.setState({ title: '' });
-            dispatch(notebookActions.addNotebook(title));
+                this.setState({ addDialogOpen: false });
+                this.setState({ title: '' });
+            if(!notebook_check_existence){
+                dispatch(notebookActions.addNotebook(title));
+                dispatch(alertActions.success('Notebook ' + title  + ' was created'));
+            } else {
+                dispatch(alertActions.error('Notebook with this title already exist'));
+            }
         }
     }
 
@@ -148,34 +156,43 @@ class NotebookList extends React.Component {
     handleDeleteNoteBook = (e) => {
         e.preventDefault();
 
-        const { dispatch } = this.props;
-        const { notebookIdSelected, title } = this.state;
+        const { dispatch, location, history, notes} = this.props;
+        const { notebookIdSelected, title} = this.state;
 
         this.setState({ deleteDialogOpen: false });
         this.setState({ menuAnchor: null });
         this.setState({ notebookIdSelected: null });
         this.setState({ title: '' });
         dispatch(notebookActions.deleteNotebook(notebookIdSelected));
+        dispatch(alertActions.success('Notebook ' + title  + ' was deleted'));
+        history.push({ pathname: '/', search: this.addParameter(location, undefined) })
     }
 
     handleRenameNotebook = (e) =>   {
         e.preventDefault();
         
-        const { dispatch } = this.props;
+        const { dispatch, notebooks } = this.props;
         const { notebookIdSelected, title } = this.state;
+
+        const notebook_check_existence = notebooks.items.find(x => x.title === title);
         
         if (title) {
             this.setState({ renameDialogOpen: false });
             this.setState({ menuAnchor: null });
             this.setState({ notebookIdSelected: null });
-            dispatch(notebookActions.renameNotebook(notebookIdSelected, title));
+            if(!notebook_check_existence){
+                dispatch(notebookActions.renameNotebook(notebookIdSelected, title));
+                dispatch(alertActions.success('Notebook was renamed on ' + title));
+            } else {
+                dispatch(alertActions.error('Notebook with this title already exist'));
+            }
         }
         
     }
 
-    addParameter(location, id){
+    addParameter(location, notebook_id){
         const query = qs.parse(location.search);
-        query.nb = id;
+        query.nb = notebook_id;
         query.n = undefined;
         return qs.stringify(query);
     }
@@ -298,7 +315,7 @@ class NotebookList extends React.Component {
                         aria-labelledby="delete-dialog-title"
                         aria-describedby="delete-dialog-description"
                     >
-                        <DialogTitle id="delete-dialog-title">{"Rename?"}</DialogTitle>
+                        <DialogTitle id="delete-dialog-title">{"Delete Notebook"}</DialogTitle>
                         <DialogContent>
                             <DialogContentText id="delete-dialog-description">
                             Warning: This will delete all notes associated with this notebook.

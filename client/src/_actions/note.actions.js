@@ -6,7 +6,8 @@ import { alertActions } from './alert.actions';
 export const noteActions = {
     getAllNotes,
     addNote,
-    updateNote
+    updateNote,
+    deleteNote
 };
 
 // This is 1 Action Creator for Note
@@ -31,11 +32,11 @@ function getAllNotes(){
     function failure(error) { return { type: noteConstants.NOTE_GETALL_FAILURE, error} }
 }
 
-function addNote(title, body, notebook_id) {
+function addNote(title, body, notebook_id, notebook_move) {
     return dispatch => {
         dispatch(request({}));
 
-        noteService.addNote(title, body, notebook_id)
+        noteService.addNote(title, body, notebook_id, notebook_move)
             .then(
                 note => {
                     dispatch(success(note.data));
@@ -72,4 +73,25 @@ function updateNote(id, title, body, notebook_id){
     function request() { return { type: noteConstants.NOTE_UPDATE_REQUEST } }
     function success(note) { return { type: noteConstants.NOTE_UPDATE_SUCCESS, note } }
     function failure(error) { return { type: noteConstants.NOTE_UPDATE_FAILURE, error } }
+}
+
+function deleteNote(id, title, body) {
+    return dispatch => {
+        dispatch(request({}));
+
+        noteService.deleteNote(id, title, body)
+            .then(
+                note => {
+                    dispatch(success(note.data));
+                },
+                error => {
+                    dispatch(failure(error));
+                    dispatch(alertActions.error(error));
+                }
+            );
+    };
+
+    function request() { return { type: noteConstants.NOTE_DELETE_REQUEST } }
+    function success(note) { return { type: noteConstants.NOTE_DELETE_SUCCESS, note } }
+    function failure(error) { return { type: noteConstants.NOTE_DELETE_FAILURE, error } }
 }
