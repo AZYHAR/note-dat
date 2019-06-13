@@ -69,6 +69,10 @@ const styles = theme => ({
         justifyContent: 'center',
         marginTop: theme.spacing.unit,
     },
+    selected: {
+        color: '#0000ff',
+        background: '#0000ff'
+    }
 });
 
 function ListItemLink(props) {
@@ -140,6 +144,7 @@ class NoteList extends React.Component {
         const { title, body, menuAnchor } = this.state;
         const notebook_id = qs.parse(location.search).nb;
         const noteList = [];
+        const selectedNoteId = qs.parse(location.search).n;
         if (notes.items) {
             notes.items.forEach((note) => {
                 if((note.notebook_id == notebook_id) || (notebook_id == "all"))    {
@@ -147,12 +152,14 @@ class NoteList extends React.Component {
                         <ListItemLink 
                             key={note.id}
                             classes={{
-                                container: classes.listItem
+                                container: classes.listItem,
+                                selected: classes.selected
                             }}
                             to = {{ 
                                 pathname: location.pathname,
                                 search: this.addParameter(location, note.id)    
-                            }}    
+                            }}   
+                            selected={selectedNoteId == note.id?true:false}
                         >
                             <ListItemText primary={<Typography noWrap>{note.title}</Typography>}/>
                             <ListItemSecondaryAction>
