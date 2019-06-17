@@ -2,6 +2,7 @@ from flask import request
 from flask_restful import Resource
 from models.db import db
 from models.note import Note, NoteSchema
+from models.notebook import Notebook
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
 import datetime
 
@@ -73,7 +74,6 @@ class NoteResource(Resource):
         note.title = data['title']
         note.body = data['body']
         note.notebook_id = data['notebook_id']
-        
         db.session.commit()
 
         #get json from pyton object
@@ -84,19 +84,15 @@ class NoteResource(Resource):
     #DELETE REQUEST (DELETE data from the server)
     @jwt_required
     def delete(self):
-        json_data = request.get_json(force=True)
-        if not json_data:
-               return {'message': 'No input data provided'}, 400
-        # Validate and deserialize input
-        data, errors = note_schema.load(json_data)
-        if errors:
-            return errors, 422
-        
-        #asking database to delete note
-        note = Note.query.filter_by(id=data['id']).delete()
+        if 'id' not in request.args:
+            return {'message': 'Required argument is missing'}, 400
+    
+        note = Note.query.filter_by(id=request.args.get('id')).first()
+
+        db.session.delete(note)
         db.session.commit()
 
-        #get json from pyton object
+        #get json from python object
         result = note_schema.dump(note).data
 
         return { "status": "success", "data": result}, 201

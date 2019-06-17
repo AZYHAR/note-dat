@@ -84,9 +84,12 @@ class Note extends React.Component {
 
     render() {
         const { classes, notes } = this.props;
+        
         const note_id = qs.parse(location.search).n;
         const note = notes.items.find((note) => note.id == note_id);
         if(note === undefined){
+            if(this.state.id)
+                this.setState({ id: undefined, header: undefined, body: undefined });
             return (
                 <Paper className={classes.emptyPaperContainer}>
                     <Typography gutterBottom variant="h5" component="h2">Select note to view it</Typography>

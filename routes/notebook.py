@@ -5,7 +5,7 @@ from models.notebook import Notebook, NotebookSchema
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
 import datetime
 
-#creating schema for many notebookss and for one
+#creating schema for many notebooks and for one
 notebooks_schema = NotebookSchema(many=True)
 notebook_schema = NotebookSchema()
 
