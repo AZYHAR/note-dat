@@ -32,11 +32,11 @@ function getAllNotes(){
     function failure(error) { return { type: noteConstants.NOTE_GETALL_FAILURE, error} }
 }
 
-function addNote(title, body, notebook_id, notebook_move) {
+function addNote(title, body, notebook_id) {
     return dispatch => {
         dispatch(request({}));
 
-        noteService.addNote(title, body, notebook_id, notebook_move)
+        noteService.addNote(title, body, notebook_id)
             .then(
                 note => {
                     dispatch(success(note.data));
