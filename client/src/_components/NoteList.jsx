@@ -75,6 +75,10 @@ const styles = theme => ({
     redText: {
         color: 'red',
     },
+    selected: {
+        color: '#0000ff',
+        background: '#0000ff'
+    }
 });
 
 function ListItemLink(props) {
@@ -221,6 +225,7 @@ class NoteList extends React.Component {
         const { title, body, menuAnchor, notebook_move } = this.state;
         const notebook_id = qs.parse(location.search).nb;
         const noteList = [];
+        const selectedNoteId = qs.parse(location.search).n;
         if (notes.items) {
             notes.items.forEach((note) => {
                 if((note.notebook_id == notebook_id) || (notebook_id == "all"))    {
@@ -228,12 +233,14 @@ class NoteList extends React.Component {
                         <ListItemLink 
                             key={note.id}
                             classes={{
-                                container: classes.listItem
+                                container: classes.listItem,
+                                selected: classes.selected
                             }}
                             to = {{ 
                                 pathname: location.pathname,
                                 search: this.addParameter(location, note.id)    
-                            }}    
+                            }}   
+                            selected={selectedNoteId == note.id?true:false}
                         >
                             <ListItemText primary={<Typography noWrap>{note.title}</Typography>}/>
                             <ListItemSecondaryAction>
@@ -264,10 +271,12 @@ class NoteList extends React.Component {
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
-                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
-                        <AddIcon className={classes.leftIcon} />
-                        Create Note
-                    </Button>
+                    {  (notebook_id != "all") &&
+                        <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
+                            <AddIcon className={classes.leftIcon} />
+                            Create Note
+                        </Button>
+                    }
                     <Dialog
                         fullWidth
                         maxWidth='sm'
