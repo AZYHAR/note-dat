@@ -11,6 +11,7 @@ class Note(db.Model):
     title = db.Column(db.String(250))
     body = db.Column(db.String())
     creation_date = db.Column(db.DateTime, server_default=db.func.current_timestamp(), nullable=False)
+    modified_date = db.Column(db.DateTime, server_default=db.func.current_timestamp(), nullable=False)
     notebook_id = db.Column(db.Integer, db.ForeignKey('notebooks.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 
@@ -28,6 +29,5 @@ class NoteSchema(ma.Schema):
     title = fields.String(required=True)
     body = fields.String(required=True)
     creation_date = fields.DateTime()
+    modified_date = fields.DateTime()
     notebook_id = fields.Integer(required=True)
-
-
