@@ -189,10 +189,12 @@ class NoteList extends React.Component {
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
-                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
-                        <AddIcon className={classes.leftIcon} />
-                        Create Note
-                    </Button>
+                    {  (notebook_id != "all") &&
+                        <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
+                            <AddIcon className={classes.leftIcon} />
+                            Create Note
+                        </Button>
+                    }
                     <Dialog
                         fullWidth
                         maxWidth='sm'
