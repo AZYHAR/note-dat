@@ -105,6 +105,12 @@ class NoteList extends React.Component {
         this.handleCreateNote = this.handleCreateNote.bind(this);
     }
 
+    componentDidMount() {
+        this.interval = setInterval(() => {
+            this.forceUpdate();
+        }, 60000);
+    }
+
     handleChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });
@@ -212,11 +218,27 @@ class NoteList extends React.Component {
         }
     }
 
-    addParameter(location, id){
+    addParameter(location, id) {
         const query = qs.parse(location.search);
         query.nb = qs.parse(location.search).nb;
         query.n = id;
         return qs.stringify(query);
+    }
+
+    getModifiedDate(date) {
+        const timeDifferenceInMilliseconds = new Date() - new Date(date);
+        if (timeDifferenceInMilliseconds < 60000) {
+            return "Modified less than a minute ago"
+        } else if (timeDifferenceInMilliseconds < 3600000) {
+            const min = Math.floor(timeDifferenceInMilliseconds / 60000);
+            return (min == 1 ? "Modified " + min + " minute ago" : "Modified " + min + " minutes ago")
+        } else if (timeDifferenceInMilliseconds < 86400000) {
+            const hours = Math.floor(timeDifferenceInMilliseconds / 3600000);
+            return (hours == 1 ? "Modified " + hours + " hour ago" : "Modified " + hours + " hours ago")
+        } else {
+            const days = Math.floor(timeDifferenceInMilliseconds / 86400000);
+            return (days == 1 ? "Modified " + days + " day ago" : "Modified " + days + " days ago")
+        }
     }
 
     render() {
@@ -242,7 +264,7 @@ class NoteList extends React.Component {
                             }}   
                             selected={selectedNoteId == note.id?true:false}
                         >
-                            <ListItemText primary={<Typography noWrap>{note.title}</Typography>}/>
+                            <ListItemText primary={<div><Typography noWrap>{note.title}</Typography><Typography noWrap variant="caption">{this.getModifiedDate(note.modified_date)}</Typography></div>}/>
                             <ListItemSecondaryAction>
                             <IconButton
                                 aria-label="Menu"

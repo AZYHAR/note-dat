@@ -33,6 +33,20 @@ const styles = theme => ({
     },
     inputBody: {
         overflowY: 'hidden'
+    },
+    captionCreated: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 3,
+    },
+    captionModified: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        marginBottom: theme.spacing.unit * 4,
+        marginRight: theme.spacing.unit * 3,
     }
 });
 
@@ -47,6 +61,8 @@ class Note extends React.Component {
             id: null,
             header: '',
             body: '',
+            createdDate: '',
+            modifiedDate: '',
             note: null
         }
         this.timer = null;
@@ -59,7 +75,7 @@ class Note extends React.Component {
         const note_id = qs.parse(location.search).n;
         const note = notes.items.find((note) => note.id == note_id);
         if(note != undefined){
-            this.setState({ id: note_id, header: note.title, body: note.body });
+            this.setState({ id: note_id, header: note.title, body: note.body, createdDate: note.creation_date, modifiedDate: note.modified_date });
         }
     }
 
@@ -80,6 +96,12 @@ class Note extends React.Component {
         //const note = { ...this.state.note, header: header, body: body };
         console.log(header + ' ' + body);
         dispatch(noteActions.updateNote(id, header, body, notebook_id));
+        this.setState({ modifiedDate: new Date() });
+    }
+
+    formatDate(date) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        return new Date(date).toLocaleDateString('en-US', options);
     }
 
     render() {
@@ -97,7 +119,7 @@ class Note extends React.Component {
             )
         }
         if(note.id !== this.state.id){
-            this.setState({ id: note.id, header: note.title, body: note.body });
+            this.setState({ id: note.id, header: note.title, body: note.body, createdDate: note.creation_date, modifiedDate: note.modified_date });
         }
         return (
             <div className={classes.container}>
@@ -125,6 +147,12 @@ class Note extends React.Component {
                         multiline={true}
                         onChange={this.handleInputChange}
                     />
+                    <Typography className={classes.captionModified} variant="caption" display="block" gutterBottom>
+                        Modified: {this.formatDate(this.state.modifiedDate)}
+                    </Typography>
+                    <Typography className={classes.captionCreated} variant="caption" display="block" gutterBottom>
+                        Created: {this.formatDate(this.state.createdDate)}
+                    </Typography>
                 </Paper>
             </div>
         )

@@ -3,7 +3,8 @@ from flask_restful import Resource
 from models.db import db
 from models.notebook import Notebook, NotebookSchema
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
-import datetime
+import pytz
+from datetime import datetime
 
 #creating schema for many notebooks and for one
 notebooks_schema = NotebookSchema(many=True)
@@ -36,7 +37,7 @@ class NotebookResource(Resource):
         #matching new notebook data by fields
         new_notebook = Notebook(
             title=data['title'],
-            creation_date=datetime.datetime.now(),
+            creation_date=datetime.now(pytz.utc),
             user_id=user_id
         )
 

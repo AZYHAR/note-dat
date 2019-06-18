@@ -4,7 +4,8 @@ from models.db import db
 from models.note import Note, NoteSchema
 from models.notebook import Notebook
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
-import datetime
+import pytz
+from datetime import datetime
 
 #creating schema for many notes and for one
 note_schema = NoteSchema()
@@ -28,7 +29,7 @@ class NoteResource(Resource):
         #geting data from fron-end 
         json_data = request.get_json(force=True)
         if not json_data:
-               return {'message': 'No input data provided'}, 400
+            return {'message': 'No input data provided'}, 400
             
         # Validate and deserialize input
         data, errors = note_schema.load(json_data)
@@ -41,7 +42,8 @@ class NoteResource(Resource):
         new_note = Note(
             title = data['title'],
             body = data['body'],
-            creation_date = datetime.datetime.now(),
+            creation_date = datetime.now(pytz.utc),
+            modified_date = datetime.now(pytz.utc),
             notebook_id = data['notebook_id'],
             user_id=user_id
         )
@@ -54,7 +56,7 @@ class NoteResource(Resource):
         result = note_schema.dump(new_note).data
 
         return { "status": 'success', 'data': result }, 201
- 
+
     #PUT REQUEST (Updating data on the server)
     @jwt_required
     def put(self):
@@ -74,6 +76,8 @@ class NoteResource(Resource):
         note.title = data['title']
         note.body = data['body']
         note.notebook_id = data['notebook_id']
+        note.modified_date = datetime.now(pytz.utc)
+        
         db.session.commit()
 
         #get json from pyton object

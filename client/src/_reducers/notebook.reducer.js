@@ -8,7 +8,9 @@ export function notebooks(state = {}, action) {
             };
         case notebookConstants.NOTEBOOK_GETALL_SUCCESS:
             return {
-                items: action.notebooks
+                items: action.notebooks.sort(function(a, b) {
+                    return new Date(b.creation_date) - new Date(a.creation_date);
+                })
             };
         case notebookConstants.NOTEBOOK_GETALL_FAILURE:
             return {
@@ -21,7 +23,7 @@ export function notebooks(state = {}, action) {
             };
         case notebookConstants.NOTEBOOK_ADD_SUCCESS:
             return {
-                items: [...state.items, action.notebook]
+                items: [action.notebook, ...state.items]
             };
         case notebookConstants.NOTEBOOK_ADD_FAILURE:
             return {
