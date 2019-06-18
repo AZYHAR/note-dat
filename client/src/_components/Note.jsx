@@ -38,14 +38,14 @@ const styles = theme => ({
         position: 'absolute',
         bottom: 0,
         right: 0,
-        marginBottom: theme.spacing.unit * 4,
+        marginBottom: theme.spacing.unit * 2,
         marginRight: theme.spacing.unit * 3,
     },
     captionModified: {
         position: 'absolute',
         bottom: 0,
         right: 0,
-        marginBottom: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit * 4,
         marginRight: theme.spacing.unit * 3,
     }
 });
@@ -143,11 +143,11 @@ class Note extends React.Component {
                         multiline={true}
                         onChange={this.handleInputChange}
                     />
-                    <Typography className={classes.captionCreated} variant="caption" display="block" gutterBottom>
-                        Created: {this.formatDate(this.state.createdDate)}
-                    </Typography>
                     <Typography className={classes.captionModified} variant="caption" display="block" gutterBottom>
                         Modified: {this.formatDate(this.state.modifiedDate)}
+                    </Typography>
+                    <Typography className={classes.captionCreated} variant="caption" display="block" gutterBottom>
+                        Created: {this.formatDate(this.state.createdDate)}
                     </Typography>
                 </Paper>
             </div>

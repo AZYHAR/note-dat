@@ -9,7 +9,9 @@ export function notes(state = {}, action) {
             };
         case noteConstants.NOTE_GETALL_SUCCESS:
             return {
-                items: action.notes
+                items: action.notes.sort(function(a, b) {
+                    return new Date(b.modified_date) - new Date(a.modified_date);
+                })
             };
         case noteConstants.NOTE_GETALL_FAILURE:
             return {
@@ -22,7 +24,7 @@ export function notes(state = {}, action) {
             };
         case noteConstants.NOTE_ADD_SUCCESS:
             return {
-                items: [...state.items, action.note]
+                items: [action.note, ...state.items]
             };
         case noteConstants.NOTE_ADD_FAILURE:
             return {
@@ -32,7 +34,9 @@ export function notes(state = {}, action) {
             return Object.assign({}, state)
         case noteConstants.NOTE_UPDATE_SUCCESS:
             return {
-                items: state.items.map(note => note.id === action.note.id ? action.note : note)
+                items: state.items.map(note => note.id === action.note.id ? action.note : note).sort(function(a, b) {
+                    return new Date(b.modified_date) - new Date(a.modified_date);
+                })
             };
         case noteConstants.NOTE_UPDATE_FAILURE:
             return {
