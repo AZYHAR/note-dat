@@ -13,6 +13,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -22,7 +24,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, withRouter } from 'react-router-dom';
 
-import { noteActions } from '../_actions';
+import { noteActions, alertActions } from '../_actions';
+
 
 const qs = require('query-string');
 
@@ -30,7 +33,7 @@ const styles = theme => ({
     container: {
         width: '100%',
         height: '100%',
-        alignItems: 'center',
+        alignItems: 'left',
     },
     paperContainer: {
         height: '100%',
@@ -69,6 +72,13 @@ const styles = theme => ({
         justifyContent: 'center',
         marginTop: theme.spacing.unit,
     },
+    redText: {
+        color: 'red',
+    },
+    selected: {
+        color: '#0000ff',
+        background: '#0000ff'
+    }
 });
 
 function ListItemLink(props) {
@@ -82,8 +92,12 @@ class NoteList extends React.Component {
 
         this.state = {
             addDialogOpen: false,
+            deleteDialogOpen: false,
+            moveDialogOpen: false,
             menuAnchor: null,
+            noteIdSelected: null,
             title: '',
+            notebook_move: '',
             body: ''
         };
 
@@ -110,8 +124,76 @@ class NoteList extends React.Component {
         this.setState({ addDialogOpen: false });
     }
 
+    handleOpenDeleteDialog = () => {
+        this.setState({ deleteDialogOpen: true });
+    }
+
+    handleCloseDeleteDialog = () => {
+        this.setState({ deleteDialogOpen: false });
+        this.setState({ menuAnchor: null });
+        this.setState({ noteIdSelected: null });
+        this.setState({ body: '' });
+    }
+
+    handleOpenMoveDialog = () => {
+        this.setState({ moveDialogOpen: true });
+    }
+
+    handleCloseMoveDialog = () => {
+        this.setState({ moveDialogOpen: false });
+        this.setState({ menuAnchor: null });
+        this.setState({ noteIdSelected: null });
+        this.setState({ move_note: ''});
+    }
+
+    handleDeleteNote = (e) => {
+        e.preventDefault();
+
+        const { dispatch, history, notes} = this.props;
+        const { noteIdSelected, title, body} = this.state;
+        
+        this.setState({ deleteDialogOpen: false });
+        this.setState({ menuAnchor: null });
+        this.setState({ noteIdSelected: null });
+        this.setState({ title: '' });
+        this.setState({ body: '' });
+
+        dispatch(noteActions.deleteNote(noteIdSelected, title, body));
+        history.push({ pathname: '/', search: this.addParameter(location, undefined) });
+    }
+
+    handleMoveNote = (e) =>   {
+        e.preventDefault();
+        
+        const { history } = this.props;
+        const { dispatch, notes, notebooks } = this.props;
+        const { noteIdSelected, notebook_move, title, body } = this.state;
+        
+        const move_title = notes.items.find(x => x.id === noteIdSelected).title;
+        const move_body = notes.items.find(x => x.id === noteIdSelected).body;
+        const notebook_element = notebooks.items.find(x => x.title === notebook_move);
+
+        //Check notebook on existence
+        this.setState({ moveDialogOpen: false });
+        this.setState({ menuAnchor: null });
+        this.setState({ noteIdSelected: null });
+        this.setState({ title: ''});
+        this.setState({ body: ''});
+        this.setState({ notebook_move: ''});
+
+        if(notebook_element && noteIdSelected != 0){
+            dispatch(noteActions.addNote(move_title, move_body, notebook_element.id));
+            dispatch(noteActions.deleteNote(noteIdSelected, title, body));
+            history.push({ pathname: '/', search: this.addParameter(location, undefined) })
+        } else {
+            dispatch(alertActions.error('Notebook for move not found'));
+        }
+        
+    }
+
     handleOpenMenu = (id, event) => {
         this.setState({ menuAnchor: event.currentTarget });
+        this.setState({ noteIdSelected: id });
     }
 
     handleCloseMenu = () => {
@@ -132,11 +214,13 @@ class NoteList extends React.Component {
             this.setState({ body: '' });
             //add notebook id
             dispatch(noteActions.addNote(title, '', notebook_id));
+            dispatch(alertActions.success('Note ' + title + ' was created'));
         }
     }
 
     addParameter(location, id) {
         const query = qs.parse(location.search);
+        query.nb = qs.parse(location.search).nb;
         query.n = id;
         return qs.stringify(query);
     }
@@ -158,10 +242,12 @@ class NoteList extends React.Component {
     }
 
     render() {
+        const { alert } = this.props;
         const { notes, classes, location } = this.props;
-        const { title, body, menuAnchor } = this.state;
+        const { title, body, menuAnchor, notebook_move } = this.state;
         const notebook_id = qs.parse(location.search).nb;
         const noteList = [];
+        const selectedNoteId = qs.parse(location.search).n;
         if (notes.items) {
             notes.items.forEach((note) => {
                 if((note.notebook_id == notebook_id) || (notebook_id == "all"))    {
@@ -169,12 +255,14 @@ class NoteList extends React.Component {
                         <ListItemLink 
                             key={note.id}
                             classes={{
-                                container: classes.listItem
+                                container: classes.listItem,
+                                selected: classes.selected
                             }}
                             to = {{ 
                                 pathname: location.pathname,
                                 search: this.addParameter(location, note.id)    
-                            }}    
+                            }}   
+                            selected={selectedNoteId == note.id?true:false}
                         >
                             <ListItemText primary={<div><Typography noWrap>{note.title}</Typography><Typography noWrap variant="caption">{this.getModifiedDate(note.modified_date)}</Typography></div>}/>
                             <ListItemSecondaryAction>
@@ -200,14 +288,17 @@ class NoteList extends React.Component {
         } else {
             noteListEmpty = false;
         }
+
         
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
-                    <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
-                        <AddIcon className={classes.leftIcon} />
-                        Create Note
-                    </Button>
+                    {  (notebook_id != "all") &&
+                        <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
+                            <AddIcon className={classes.leftIcon} />
+                            Create Note
+                        </Button>
+                    }
                     <Dialog
                         fullWidth
                         maxWidth='sm'
@@ -253,9 +344,58 @@ class NoteList extends React.Component {
                         onClose={this.handleCloseMenu}
                         disableAutoFocusItem={true}
                     >
-                        <MenuItem>Rename</MenuItem>
-                        <MenuItem className={classes.redText}>Delete</MenuItem>
+                        <MenuItem  onClick={this.handleOpenMoveDialog}>Move</MenuItem>
+                        <MenuItem onClick={this.handleOpenDeleteDialog} className={classes.redText}>Delete</MenuItem>
                     </Menu>
+                    <Dialog
+                        fullWidth
+                        maxWidth='sm'
+                        open={this.state.deleteDialogOpen}
+                        onClose={this.handleCloseDeleteDialog}
+                        aria-labelledby="delete-dialog-title"
+                        aria-describedby="delete-dialog-description"
+                    >
+                        <DialogTitle id="delete-dialog-title">{"Delete Note"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="delete-dialog-description">
+                            Warning: This will delete all data inside note.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleCloseDeleteDialog} color="primary">
+                            Cancel
+                            </Button>
+                            <Button onClick={this.handleDeleteNote} className={classes.redText} color="primary" to = {{ 
+                                pathname: location.pathname,
+                                search: this.addParameter(location, undefined)    
+                            }}>
+                            Delete
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog
+                        fullWidth
+                        maxWidth='sm'
+                        open={this.state.moveDialogOpen}
+                        onClose={this.handleCloseMoveDialog}
+                        aria-labelledby="form-move-dialog-title"
+                    >
+                        <DialogTitle id="form-move-dialog-title">Move Note to Notebook</DialogTitle>
+                        <DialogContent>
+                            <form onSubmit={this.handleMoveNote}>
+                                <FormControl margin="normal" fullWidth>
+                                    <InputLabel htmlFor="notebook_move">Write Notebook Title</InputLabel>
+                                    <Input id="notebook_move" name="notebook_move" value={notebook_move} onChange={this.handleChange} autoFocus />
+                                </FormControl>
+                                <Button onClick={this.handleCloseMoveDialog} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button type="submit" color="primary">
+                                    Move
+                                </Button>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </Paper>
             </div>
         )
@@ -263,10 +403,10 @@ class NoteList extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { notes } = state;
+    const { notes, notebooks, alert } = state;
     
     return {
-        notes
+        notes, notebooks, alert
     };
 }
 
