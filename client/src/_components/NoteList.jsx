@@ -91,6 +91,12 @@ class NoteList extends React.Component {
         this.handleCreateNote = this.handleCreateNote.bind(this);
     }
 
+    componentDidMount() {
+        this.interval = setInterval(() => {
+            this.forceUpdate();
+        }, 60000);
+    }
+
     handleChange(e) {
         const { name, value } = e.target;
         this.setState({ [name]: value });

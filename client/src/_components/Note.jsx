@@ -96,6 +96,7 @@ class Note extends React.Component {
         //const note = { ...this.state.note, header: header, body: body };
         console.log(header + ' ' + body);
         dispatch(noteActions.updateNote(id, header, body, notebook_id));
+        this.setState({ modifiedDate: new Date() });
     }
 
     formatDate(date) {
