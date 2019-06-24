@@ -293,7 +293,7 @@ class NoteList extends React.Component {
         return (
             <div className={classes.container}>
                 <Paper className={classes.paperContainer}>
-                    {  (notebook_id != "all") &&
+                    {  (notebook_id != "all" && notebook_id != undefined) &&
                         <Button variant="contained" color="default" className={classes.button} onClick={this.handleOpenAddDialog}>
                             <AddIcon className={classes.leftIcon} />
                             Create Note
@@ -326,7 +326,13 @@ class NoteList extends React.Component {
                         <List>
                             {noteList}
                         </List>
-                        {noteListEmpty && 
+                        {noteListEmpty && notebook_id == undefined && 
+                            <div>
+                                <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+                                    Please Select Notebook
+                                </Typography>
+                            </div>}
+                        {noteListEmpty && notebook_id != undefined && 
                             <div>
                                 <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
                                     You don't have any notes yet.
