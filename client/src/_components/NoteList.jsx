@@ -326,9 +326,7 @@ class NoteList extends React.Component {
 
         if(notebooks.items){
             notebooks.items.forEach((notebook) => {
-                if(notebook.id != notebook_id){
-                    move_options.push(notebook.title);
-                }
+                move_options.push(notebook.title);
             });
         }
 
