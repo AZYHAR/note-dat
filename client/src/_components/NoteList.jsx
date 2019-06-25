@@ -106,13 +106,6 @@ class NoteList extends React.Component {
             anchorEl: null,
             selectedIndex: 0
         };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleCreateNote = this.handleCreateNote.bind(this);
-
-        this.handleClickListItem = this.handleClickListItem.bind(this);
-        this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
-        this.handleClose = this.handleClose.bind(this);
     }
 
     componentDidMount() {
@@ -121,8 +114,8 @@ class NoteList extends React.Component {
         }, 60000);
     }
 
-    handleChange(e) {
-        const { name, value } = e.target;
+    handleChange = (event) => {
+        const { name, value } = event.target;
         this.setState({ [name]: value });
     }
 
@@ -221,7 +214,7 @@ class NoteList extends React.Component {
         this.setState({ menuAnchor: null });
     }
 
-    handleCreateNote(e) {
+    handleCreateNote = (event) => {
         e.preventDefault();
 
         //get id of notebook
@@ -262,16 +255,16 @@ class NoteList extends React.Component {
         }
     }
 
-    handleClickListItem(event) {
+    handleClickListItem = (event) => {
         this.setState({ anchorEl : event.currentTarget});
     }
     
-    handleMenuItemClick(event, index) {
+    handleMenuItemClick = (event, index) => {
         this.setState({ selectedIndex : index });
         this.setState({ anchorEl : null});
     }
     
-    handleClose() {
+    handleClose = () => {
         this.setState({ anchorEl : null});
     }
 
@@ -461,8 +454,6 @@ class NoteList extends React.Component {
                                         ))}
                                     </Menu>
                                 </div>
-                                    {/* <InputLabel htmlFor="notebook_move">Write Notebook Title</InputLabel>
-                                    <Input id="notebook_move" name="notebook_move" value={notebook_move} onChange={this.handleChange} autoFocus /> */}
                                 </FormControl>
                                 <Button onClick={this.handleCloseMoveDialog} color="primary">
                                     Cancel
