@@ -29,78 +29,72 @@ const styles = {
   }
 };
 
-const options = [
-  <Button><Link to="" className={styles.logoutButton}>Change Password</Link></Button>,
-  <Button><Link to="/login" className={styles.logoutButton}>Logout</Link></Button>,
-];
-
-function LongMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-
-  function handleClick(event) {
-    setAnchorEl(event.currentTarget);
-  }
-
-  function handleClose() {
-    setAnchorEl(null);
-  }
-
-  return (
-    <div>
-      <IconButton
-        aria-label="More"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <AccountCircle/>
-      </IconButton>
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-            maxHeight: ITEM_HEIGHT * 4.5,
-            width: 200,
-          },
-        }}
-      >
-        {options.map(option => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-            {option}
-          </MenuItem>
-        ))}
-      </Menu>
-    </div>
-  );
-}
-
 class NavBar extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+          anchorEl: null,
+          open: false
+        }
+    }
+
+    handleClick = (event) => {
+      this.setState({anchorEl: event.currentTarget});
+      this.setState({open: true});
+    }
+
+    handleClose = () => {
+      this.setState({anchorEl: null});
+      this.setState({open: false});
     }
 
     render() {
         const { classes, user } = this.props;
+        const { anchorEl, open } = this.state;
+        const options = [
+          <Button><Link to="" className={styles.logoutButton}>Change Password</Link></Button>,
+          <Button><Link to="/login" className={styles.logoutButton}>Logout</Link></Button>,
+        ];
         
         return (
             <AppBar position="static">
               <Toolbar>
-                {/* <IconButton className={classes.menuButton} color="inherit" aria-label="Menu"> */}
-                  {/* <MenuIcon />
-                </IconButton> */}
                 <Typography variant="h6" color="inherit" className={classes.grow}>
                   NoteDat
                 </Typography>
                 <Typography variant="h6" color="inherit" className={classes.grow}>
                   Hi {user.name}!
                 </Typography>
-                {/* <Button><Link to="/login" className={classes.logoutButton}>Logout</Link></Button> */}
-                <LongMenu/>
+                <div>
+                  <IconButton
+                    aria-label="More"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    onClick={this.handleClick}
+                  >
+                    <AccountCircle/>
+                  </IconButton>
+                  <Menu
+                    id="long-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={open}
+                    onClose={this.handleClose}
+                    PaperProps={{
+                      style: {
+                        maxHeight: ITEM_HEIGHT * 4.5,
+                        width: 200,
+                      },
+                    }}
+                  >
+                    {options.map(option => (
+                      <MenuItem key={option} selected={option === 'Pyxis'} onClick={this.handleClose}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </div>
               </Toolbar>
             </AppBar>
         )

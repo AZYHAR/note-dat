@@ -66,8 +66,6 @@ class Note extends React.Component {
             note: null
         }
         this.timer = null;
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.triggerSave = this.triggerSave.bind(this);
     }
 
     componentDidMount(){
@@ -79,7 +77,7 @@ class Note extends React.Component {
         }
     }
 
-    handleInputChange(e) {
+    handleInputChange = (e) => {
         clearTimeout(this.timer);
         
         this.setState({
@@ -88,7 +86,7 @@ class Note extends React.Component {
         this.timer = setTimeout(this.triggerSave, WAIT_INTERVAL);
     }
 
-    triggerSave() {
+    triggerSave = () => {
         const { header, body } = this.state;
         const { dispatch } = this.props;
         const notebook_id = qs.parse(this.props.location.search).nb;

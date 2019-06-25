@@ -59,17 +59,15 @@ class SignUpPage extends React.Component {
             submitted: false,
             error_handle: false
         };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({ [name]: value });
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
+    handleSubmit = (e) => {
+        event.preventDefault();
 
         this.setState({ submitted: true });
         const { username, password, name, password_confirm} = this.state;
