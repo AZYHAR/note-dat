@@ -78,7 +78,11 @@ const styles = theme => ({
     selected: {
         color: '#0000ff',
         background: '#0000ff'
-    }
+    },
+    root: {
+        width: '100%',
+        backgroundColor: theme.palette.background.paper,
+    },
 });
 
 function ListItemLink(props) {
@@ -98,11 +102,17 @@ class NoteList extends React.Component {
             noteIdSelected: null,
             title: '',
             notebook_move: '',
-            body: ''
+            body: '',
+            anchorEl: null,
+            selectedIndex: 0
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleCreateNote = this.handleCreateNote.bind(this);
+
+        this.handleClickListItem = this.handleClickListItem.bind(this);
+        this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
 
     componentDidMount() {
@@ -167,13 +177,24 @@ class NoteList extends React.Component {
         
         const { history } = this.props;
         const { dispatch, notes, notebooks } = this.props;
-        const { noteIdSelected, notebook_move, title, body } = this.state;
+        const { title, body, noteIdSelected } = this.state;
+        const { selectedIndex } = this.state;
+
+        var notebook_move;
         
+        if(notebooks.items){
+            notebooks.items.forEach((notebook, index) => {
+                if(selectedIndex == index){
+                    notebook_move = notebook.title;
+                }
+            });
+        }
+
         const move_title = notes.items.find(x => x.id === noteIdSelected).title;
         const move_body = notes.items.find(x => x.id === noteIdSelected).body;
         const notebook_element = notebooks.items.find(x => x.title === notebook_move);
 
-        //Check notebook on existence
+        // Check notebook on existence
         this.setState({ moveDialogOpen: false });
         this.setState({ menuAnchor: null });
         this.setState({ noteIdSelected: null });
@@ -241,12 +262,26 @@ class NoteList extends React.Component {
         }
     }
 
+    handleClickListItem(event) {
+        this.setState({ anchorEl : event.currentTarget});
+    }
+    
+    handleMenuItemClick(event, index) {
+        this.setState({ selectedIndex : index });
+        this.setState({ anchorEl : null});
+    }
+    
+    handleClose() {
+        this.setState({ anchorEl : null});
+    }
+
     render() {
         const { alert } = this.props;
-        const { notes, classes, location } = this.props;
+        const { notes, notebooks, classes, location } = this.props;
         const { title, body, menuAnchor, notebook_move } = this.state;
         const notebook_id = qs.parse(location.search).nb;
         const noteList = [];
+        const move_options = [];
         const selectedNoteId = qs.parse(location.search).n;
         if (notes.items) {
             notes.items.forEach((note) => {
@@ -289,6 +324,15 @@ class NoteList extends React.Component {
             noteListEmpty = false;
         }
 
+        if(notebooks.items){
+            notebooks.items.forEach((notebook) => {
+                if(notebook.id != notebook_id){
+                    move_options.push(notebook.title);
+                }
+            });
+        }
+
+        const { anchorEl, selectedIndex} = this.state;
         
         return (
             <div className={classes.container}>
@@ -390,8 +434,37 @@ class NoteList extends React.Component {
                         <DialogContent>
                             <form onSubmit={this.handleMoveNote}>
                                 <FormControl margin="normal" fullWidth>
-                                    <InputLabel htmlFor="notebook_move">Write Notebook Title</InputLabel>
-                                    <Input id="notebook_move" name="notebook_move" value={notebook_move} onChange={this.handleChange} autoFocus />
+                                <div className={classes.root}>
+                                    <List component="nav" aria-label="Device settings">
+                                        <ListItem
+                                        button
+                                        aria-haspopup="true"
+                                        aria-controls="lock-menu"
+                                        onClick={this.handleClickListItem}
+                                        >
+                                        <ListItemText primary={move_options[selectedIndex]} />
+                                        </ListItem>
+                                    </List>
+                                    <Menu
+                                        id="lock-menu"
+                                        anchorEl={anchorEl}
+                                        keepMounted
+                                        open={Boolean(anchorEl)}
+                                        onClose={this.handleClose}
+                                    >
+                                        {move_options.map((option, index) => (
+                                        <MenuItem
+                                            key={option}
+                                            selected={index === selectedIndex}
+                                            onClick={event => this.handleMenuItemClick(event, index)}
+                                        >
+                                            {option}
+                                        </MenuItem>
+                                        ))}
+                                    </Menu>
+                                </div>
+                                    {/* <InputLabel htmlFor="notebook_move">Write Notebook Title</InputLabel>
+                                    <Input id="notebook_move" name="notebook_move" value={notebook_move} onChange={this.handleChange} autoFocus /> */}
                                 </FormControl>
                                 <Button onClick={this.handleCloseMoveDialog} color="primary">
                                     Cancel
