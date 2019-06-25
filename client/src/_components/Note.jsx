@@ -113,9 +113,20 @@ class Note extends React.Component {
             if(this.state.id)
                 this.setState({ id: undefined, header: undefined, body: undefined });
             return (
-                <Paper className={classes.emptyPaperContainer}>
-                    <Typography gutterBottom variant="h5" component="h2">Select note to view it</Typography>
-                </Paper>
+                <div className={classes.container}>
+                    <Paper className={classes.paperContainer}>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            <InputBase 
+                                classes={{
+                                    input: classes.inputHeader
+                                }}
+                                value="Select note for input"
+                                fullWidth={true}
+                                disabled={true}
+                            />
+                        </Typography>
+                    </Paper>
+                </div>
             )
         }
         if(note.id !== this.state.id){
