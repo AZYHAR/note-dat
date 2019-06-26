@@ -64,7 +64,7 @@ class Note extends React.Component {
             createdDate: '',
             modifiedDate: '',
             note: null,
-            update: false
+            last_note_id: undefined
         }
         this.timer = null;
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -76,12 +76,12 @@ class Note extends React.Component {
         const note_id = qs.parse(location.search).n;
         const note = notes.items.find((note) => note.id == note_id);
         if(note != undefined){
-            if(this.state.update == false){
+            this.setState({ id: note_id, header: note.title, createdDate: note.creation_date, modifiedDate: note.modified_date});
+            if(this.state.last_note_id != note_id){
                 this.setState({header: note.title});
                 this.setState({body: note.body});
-                this.setState({update: true});
+                this.setState({last_note_id: note_id});
             }
-            this.setState({ id: note_id, header: note.title, createdDate: note.creation_date, modifiedDate: note.modified_date});
         } else {
             this.setState({ id: undefined,
                 header: '',
@@ -89,7 +89,7 @@ class Note extends React.Component {
                 createdDate: '',
                 modifiedDate: '',
                 note: null,
-                update: false
+                last_note_id: undefined
             });
         }
     }
