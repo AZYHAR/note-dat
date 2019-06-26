@@ -50,7 +50,7 @@ const styles = theme => ({
     }
 });
 
-const WAIT_INTERVAL = 300;
+const WAIT_INTERVAL = 400;
 
 const ENTER_KEY = 13;
 
@@ -58,24 +58,39 @@ class Note extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: null,
+            id: undefined,
             header: '',
             body: '',
             createdDate: '',
             modifiedDate: '',
-            note: null
+            note: null,
+            last_note_id: undefined
         }
         this.timer = null;
         this.handleInputChange = this.handleInputChange.bind(this);
         this.triggerSave = this.triggerSave.bind(this);
     }
 
-    componentDidMount(){
-        const { location, notes } = this.props;
+    componentWillReceiveProps(nextProps) {
+        const { location, notes } = nextProps;
         const note_id = qs.parse(location.search).n;
         const note = notes.items.find((note) => note.id == note_id);
         if(note != undefined){
-            this.setState({ id: note_id, header: note.title, body: note.body, createdDate: note.creation_date, modifiedDate: note.modified_date });
+            this.setState({ id: note_id, header: note.title, createdDate: note.creation_date, modifiedDate: note.modified_date});
+            if(this.state.last_note_id != note_id){
+                this.setState({header: note.title});
+                this.setState({body: note.body});
+                this.setState({last_note_id: note_id});
+            }
+        } else {
+            this.setState({ id: undefined,
+                header: '',
+                body: '',
+                createdDate: '',
+                modifiedDate: '',
+                note: null,
+                last_note_id: undefined
+            });
         }
     }
 
@@ -93,8 +108,6 @@ class Note extends React.Component {
         const { dispatch } = this.props;
         const notebook_id = qs.parse(this.props.location.search).nb;
         const id = qs.parse(this.props.location.search).n;
-        //const note = { ...this.state.note, header: header, body: body };
-        console.log(header + ' ' + body);
         dispatch(noteActions.updateNote(id, header, body, notebook_id));
         this.setState({ modifiedDate: new Date() });
     }
@@ -105,66 +118,60 @@ class Note extends React.Component {
     }
 
     render() {
-        const { classes, notes } = this.props;
-        
-        const note_id = qs.parse(location.search).n;
-        const note = notes.items.find((note) => note.id == note_id);
-        if(note === undefined){
-            if(this.state.id)
-                this.setState({ id: undefined, header: undefined, body: undefined });
-            return (
-                <div className={classes.container}>
+        const { classes} = this.props;
+        const { id} = this.state;
+
+        return (
+            <div className={classes.container}>
+                { id === undefined &&
+                    <div className={classes.container}>
+                        <Paper className={classes.paperContainer}>
+                            <Typography gutterBottom variant="h5" component="h2">
+                                <InputBase 
+                                    classes={{
+                                        input: classes.inputHeader
+                                    }}
+                                    value="Select note for input"
+                                    fullWidth={true}
+                                    disabled={true}
+                                />
+                            </Typography>
+                        </Paper>
+                    </div>
+                }   
+                { id != undefined &&
                     <Paper className={classes.paperContainer}>
                         <Typography gutterBottom variant="h5" component="h2">
                             <InputBase 
                                 classes={{
                                     input: classes.inputHeader
                                 }}
-                                value="Select note for input"
+                                name='header'
+                                value={this.state.header}
+                                placeholder='Untitled'
                                 fullWidth={true}
-                                disabled={true}
+                                onChange={this.handleInputChange}
                             />
                         </Typography>
-                    </Paper>
-                </div>
-            )
-        }
-        if(note.id !== this.state.id){
-            this.setState({ id: note.id, header: note.title, body: note.body, createdDate: note.creation_date, modifiedDate: note.modified_date });
-        }
-        return (
-            <div className={classes.container}>
-                <Paper className={classes.paperContainer}>
-                    <Typography gutterBottom variant="h5" component="h2">
                         <InputBase 
                             classes={{
-                                input: classes.inputHeader
+                                input: classes.inputBody
                             }}
-                            name='header'
-                            value={this.state.header}
-                            placeholder='Untitled'
+                            name='body'
+                            placeholder='Start typing here...'
+                            value={this.state.body}
                             fullWidth={true}
+                            multiline={true}
                             onChange={this.handleInputChange}
                         />
-                    </Typography>
-                    <InputBase 
-                        classes={{
-                            input: classes.inputBody
-                        }}
-                        name='body'
-                        placeholder='Start typing here...'
-                        value={this.state.body}
-                        fullWidth={true}
-                        multiline={true}
-                        onChange={this.handleInputChange}
-                    />
-                    <Typography className={classes.captionModified} variant="caption" display="block" gutterBottom>
-                        Modified: {this.formatDate(this.state.modifiedDate)}
-                    </Typography>
-                    <Typography className={classes.captionCreated} variant="caption" display="block" gutterBottom>
-                        Created: {this.formatDate(this.state.createdDate)}
-                    </Typography>
-                </Paper>
+                        <Typography className={classes.captionModified} variant="caption" display="block" gutterBottom>
+                            Modified: {this.formatDate(this.state.modifiedDate)}
+                        </Typography>
+                        <Typography className={classes.captionCreated} variant="caption" display="block" gutterBottom>
+                            Created: {this.formatDate(this.state.createdDate)}
+                        </Typography>
+                    </Paper>
+                }
             </div>
         )
     }
