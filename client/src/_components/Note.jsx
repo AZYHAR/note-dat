@@ -6,6 +6,9 @@ import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, withRouter } from 'react-router-dom';
 import { noteActions } from '../_actions/note.actions';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
 
 const qs = require('query-string');
 
@@ -29,10 +32,15 @@ const styles = theme => ({
         objectFit: 'cover',  
     },
     inputHeader: {
-        fontSize: 30
+        fontSize: 30,
+        width: '100%'
     },
     inputBody: {
-        overflowY: 'hidden'
+        overflowY: 'auto',
+    },
+    resizeButton: {
+        margin: '10px',
+        padding: '10px'
     },
     captionCreated: {
         position: 'absolute',
@@ -47,7 +55,11 @@ const styles = theme => ({
         right: 0,
         marginBottom: theme.spacing.unit * 4,
         marginRight: theme.spacing.unit * 3,
-    }
+    },
+    inline: {
+        display: 'flex',
+        alignItems: 'center'
+    },
 });
 
 const WAIT_INTERVAL = 400;
@@ -76,7 +88,7 @@ class Note extends React.Component {
         const note_id = qs.parse(location.search).n;
         const note = notes.items.find((note) => note.id == note_id);
         if(note != undefined){
-            this.setState({ id: note_id, header: note.title, createdDate: note.creation_date, modifiedDate: note.modified_date});
+            this.setState({ id: note_id, createdDate: note.creation_date, modifiedDate: note.modified_date});
             if(this.state.last_note_id != note_id){
                 this.setState({header: note.title});
                 this.setState({body: note.body});
@@ -117,42 +129,47 @@ class Note extends React.Component {
         return new Date(date).toLocaleDateString('en-US', options);
     }
 
+    handleChangeSize = () => {
+        this.props.dispatch(noteActions.resizeNote(!this.props.notes.NoteFullScreen));
+    }
+
     render() {
         const { classes} = this.props;
         const { id} = this.state;
+        const { NoteFullScreen } = this.props.notes;
 
         return (
             <div className={classes.container}>
                 { id === undefined &&
-                    <div className={classes.container}>
-                        <Paper className={classes.paperContainer}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                <InputBase 
-                                    classes={{
-                                        input: classes.inputHeader
-                                    }}
-                                    value="Select note for input"
-                                    fullWidth={true}
-                                    disabled={true}
-                                />
-                            </Typography>
-                        </Paper>
-                    </div>
-                }   
-                { id != undefined &&
                     <Paper className={classes.paperContainer}>
                         <Typography gutterBottom variant="h5" component="h2">
                             <InputBase 
                                 classes={{
                                     input: classes.inputHeader
                                 }}
-                                name='header'
-                                value={this.state.header}
-                                placeholder='Untitled'
+                                value="Select note for input"
                                 fullWidth={true}
-                                onChange={this.handleInputChange}
+                                disabled={true}
                             />
                         </Typography>
+                    </Paper>
+                }   
+                { id != undefined &&
+                    <Paper className={classes.paperContainer}>
+                        <div className={classes.inline}>
+                            <InputBase 
+                                        classes={{
+                                            input: classes.inputHeader
+                                        }}
+                                        name='header'
+                                        value={this.state.header}
+                                        placeholder='Untitled'
+                                        fullWidth={true}
+                                        onChange={this.handleInputChange}
+                                />
+                            <IconButton className={classes.resizeButton} onClick={this.handleChangeSize}> {NoteFullScreen ? <ChevronRight/> : <ChevronLeft/>} </IconButton> 
+                        </div>
+
                         <InputBase 
                             classes={{
                                 input: classes.inputBody
@@ -164,10 +181,11 @@ class Note extends React.Component {
                             multiline={true}
                             onChange={this.handleInputChange}
                         />
-                        <Typography className={classes.captionModified} variant="caption" display="block" gutterBottom>
+
+                        <Typography className={classes.captionModified} variant="caption" >
                             Modified: {this.formatDate(this.state.modifiedDate)}
                         </Typography>
-                        <Typography className={classes.captionCreated} variant="caption" display="block" gutterBottom>
+                        <Typography className={classes.captionCreated} variant="caption">
                             Created: {this.formatDate(this.state.createdDate)}
                         </Typography>
                     </Paper>

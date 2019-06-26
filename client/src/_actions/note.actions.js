@@ -1,13 +1,15 @@
 import { noteConstants } from '../_constants/note.constants';
 import { noteService } from '../_services';
 import { alertActions } from './alert.actions';
+import { Note } from '../_components/Note';
 
 // We wrapped all Actions creators for easier accessing them in other files
 export const noteActions = {
     getAllNotes,
     addNote,
     updateNote,
-    deleteNote
+    deleteNote,
+    resizeNote
 };
 
 // This is 1 Action Creator for Note
@@ -94,4 +96,17 @@ function deleteNote(id, title, body) {
     function request() { return { type: noteConstants.NOTE_DELETE_REQUEST } }
     function success(note) { return { type: noteConstants.NOTE_DELETE_SUCCESS, note } }
     function failure(error) { return { type: noteConstants.NOTE_DELETE_FAILURE, error } }
+}
+
+function resizeNote(NoteFullScreen) {
+    return dispatch => {
+        dispatch(send(NoteFullScreen));
+    };
+
+    function send(NoteFullScreen) {
+        return {
+            type: noteConstants.NOTE_RESIZE,
+            NoteFullScreen
+        }
+    }
 }

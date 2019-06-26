@@ -92,6 +92,7 @@ function ListItemLink(props) {
 class NoteList extends React.Component {
     constructor(props) {
         super(props);
+        this.props.dispatch(noteActions.resizeNote(false));
         this.props.dispatch(noteActions.getAllNotes());
 
         this.state = {
