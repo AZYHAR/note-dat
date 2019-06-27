@@ -9,7 +9,7 @@ export function notebooks(state = {}, action) {
         case notebookConstants.NOTEBOOK_GETALL_SUCCESS:
             return {
                 items: action.notebooks.sort(function(a, b) {
-                    return new Date(b.creation_date) - new Date(a.creation_date);
+                    return new Date(b.modified_date) - new Date(a.modified_date);
                 })
             };
         case notebookConstants.NOTEBOOK_GETALL_FAILURE:
@@ -54,6 +54,12 @@ export function notebooks(state = {}, action) {
         case notebookConstants.NOTEBOOK_RENAME_FAILURE:
             return {
                 error: action.error
+            };
+        case notebookConstants.NOTEBOOK_SORT:
+            return {
+                items: state.items.sort(function(a, b) {
+                    return a.id == action.notebook_id ? -1 : b.id == action.notebook_id ? 1 : 0;
+                })
             };
         case userConstants.LOGOUT:
             return {};
