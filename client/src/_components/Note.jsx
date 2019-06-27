@@ -9,6 +9,8 @@ import { noteActions } from '../_actions/note.actions';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
+import { noteActions, notebookActions } from '../_actions';
+
 
 const qs = require('query-string');
 
@@ -121,6 +123,7 @@ class Note extends React.Component {
         const notebook_id = qs.parse(this.props.location.search).nb;
         const id = qs.parse(this.props.location.search).n;
         dispatch(noteActions.updateNote(id, header, body, notebook_id));
+        dispatch(notebookActions.sortNotebook(notebook_id));
         this.setState({ modifiedDate: new Date() });
     }
 

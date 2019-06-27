@@ -38,6 +38,12 @@ class NoteResource(Resource):
 
         user_id = get_jwt_identity()
 
+        notebook = Notebook.query.filter_by(id=data['notebook_id']).first()
+        if not notebook:
+            return {'message': 'Category does not exist'}, 400
+
+        notebook.modified_date = datetime.now(pytz.utc)
+
         #matching new note data by fields
         new_note = Note(
             title = data['title'],
@@ -69,6 +75,12 @@ class NoteResource(Resource):
         if errors:
             return errors, 422
         
+        notebook = Notebook.query.filter_by(id=data['notebook_id']).first()
+        if not notebook:
+            return {'message': 'Category does not exist'}, 400
+
+        notebook.modified_date = datetime.now(pytz.utc)
+
         note = Note.query.filter_by(id=data['id']).first()
         if not note:
             return {'message': 'Category does not exist'}, 400

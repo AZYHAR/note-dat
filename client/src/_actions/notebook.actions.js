@@ -6,7 +6,8 @@ export const notebookActions = {
     getAllNotebooks,
     addNotebook,
     deleteNotebook,
-    renameNotebook
+    renameNotebook,
+    sortNotebook
 };
 
 function getAllNotebooks() {
@@ -91,4 +92,12 @@ function renameNotebook(id, title) {
     function request() { return { type: notebookConstants.NOTEBOOK_RENAME_REQUEST } }
     function success(notebook) { return { type: notebookConstants.NOTEBOOK_RENAME_SUCCESS, notebook } }
     function failure(error) { return { type: notebookConstants.NOTEBOOK_RENAME_FAILURE, error } }
+}
+
+function sortNotebook(notebook_id) {
+    return dispatch => {
+        dispatch(update(notebook_id));
+    };
+
+    function update(notebook_id) { return { type: notebookConstants.NOTEBOOK_SORT, notebook_id } }
 }

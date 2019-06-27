@@ -9,7 +9,8 @@ class Notebook(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
-    creation_date = db.Column(db.DateTime)
+    creation_date = db.Column(db.DateTime, server_default=db.func.current_timestamp(), nullable=False)
+    modified_date = db.Column(db.DateTime, server_default=db.func.current_timestamp(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     notes = db.relationship("Note", cascade="all,delete", backref = "notebooks")
     
@@ -22,3 +23,4 @@ class NotebookSchema(ma.Schema):
     id = fields.Integer()
     title = fields.String(required=True)
     creation_date = fields.DateTime()
+    modified_date = fields.DateTime()

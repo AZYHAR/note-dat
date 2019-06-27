@@ -36,9 +36,10 @@ class NotebookResource(Resource):
 
         #matching new notebook data by fields
         new_notebook = Notebook(
-            title=data['title'],
-            creation_date=datetime.now(pytz.utc),
-            user_id=user_id
+            title = data['title'],
+            creation_date = datetime.now(pytz.utc),
+            modified_date = datetime.now(pytz.utc),
+            user_id = user_id
         )
 
         try:
