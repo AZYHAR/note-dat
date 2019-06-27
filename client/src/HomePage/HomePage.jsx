@@ -41,6 +41,9 @@ const styles = theme => ({
         margin: theme.spacing.unit,
         width: '200px',
     },
+    resize: {
+        display: 'none',
+    },
     wideItem: {
         flexGrow: 6,
         flexShrink: 1,
@@ -56,13 +59,14 @@ class HomePage extends React.Component {
 
     render() {
         const { user, dispatch, classes } = this.props;
+        const { NoteFullScreen } = this.props.notes;
 
         return (
             <div className={classes.container}>
                 <div className={classes.appbar}><NavBar /></div>
                 <div className={classes.content}>
-                    <div className={classes.narrowItem}><NotebookList className={classes.paper}/></div>
-                    <div className={classes.narrowItem}><NoteList className={classes.paper}/></div>
+                    <div className={NoteFullScreen ? classes.resize : classes.narrowItem}><NotebookList className={classes.paper}/></div>
+                    <div className={NoteFullScreen ? classes.resize : classes.narrowItem}><NoteList className={classes.paper}/></div>
                     <div className={classes.wideItem}><Note className={classes.paper}/></div>
                 </div>
             </div>
@@ -77,9 +81,11 @@ HomePage.propTypes = {
 function mapStateToProps(state) {
     const { authentication } = state;
     const { user } = authentication;
+    const { notes } = state;
     
     return {
-        user
+        user,
+        notes
     };
 }
 
