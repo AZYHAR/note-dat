@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, withRouter } from 'react-router-dom';
-import { noteActions } from '../_actions/note.actions';
+import { noteActions, notebookActions } from '../_actions';
 
 const qs = require('query-string');
 
@@ -109,6 +109,7 @@ class Note extends React.Component {
         const notebook_id = qs.parse(this.props.location.search).nb;
         const id = qs.parse(this.props.location.search).n;
         dispatch(noteActions.updateNote(id, header, body, notebook_id));
+        dispatch(notebookActions.sortNotebook(notebook_id));
         this.setState({ modifiedDate: new Date() });
     }
 

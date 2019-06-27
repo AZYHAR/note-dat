@@ -24,7 +24,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import { Link, withRouter } from 'react-router-dom';
 
-import { noteActions, alertActions } from '../_actions';
+import { noteActions, notebookActions, alertActions } from '../_actions';
 
 
 const qs = require('query-string');
@@ -235,6 +235,7 @@ class NoteList extends React.Component {
             this.setState({ body: '' });
             //add notebook id
             dispatch(noteActions.addNote(title, '', notebook_id));
+            dispatch(notebookActions.sortNotebook(notebook_id));
             dispatch(alertActions.success('Note ' + title + ' was created'));
         }
     }
