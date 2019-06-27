@@ -9,7 +9,7 @@ import { noteActions } from '../_actions/note.actions';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
-import { noteActions, notebookActions } from '../_actions';
+import { notebookActions } from '../_actions';
 
 
 const qs = require('query-string');
