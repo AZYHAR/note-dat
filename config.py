@@ -7,7 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 #parameters for SQL DATABASE
 SQLALCHEMY_ECHO = False
 SQLALCHEMY_TRACK_MODIFICATIONS = True
-SQLALCHEMY_DATABASE_URI = "postgres://emdgasxpuybpur:e4c979ebe7fbb392ef8ea16f5d314e6b82e37c70ef88a2efd65a682fa1ad00a3@ec2-50-16-197-244.compute-1.amazonaws.com:5432/depie0b194vn8i"
+SQLALCHEMY_DATABASE_URI = "postgres://iqcmcpjkfsydhq:c6ac671de1a2ace64effcb45b2fdbeb3748d0e9af3c5dbf125ad37d3341ce87b@ec2-107-21-216-112.compute-1.amazonaws.com:5432/dfi5q9e71njile"
 
 #token secret key
 JWT_SECRET_KEY = 'jwt-secret-key'
