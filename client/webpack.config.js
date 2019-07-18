@@ -22,18 +22,20 @@ module.exports = {
     plugins: [new HtmlWebpackPlugin({
         template: './src/index.html'
     })],
-    devServer: {
-        historyApiFallback: true,
-        proxy: {
-            '/api': {
-                target: 'http://localhost:5000'
-            }
-        }
-    },
+    // devServer: {
+    //     historyApiFallback: true,
+    //     proxy: {
+    //         '/api': {
+    //             target: 'https://node-dat-backend.herokuapp.com/',
+    //             changeOrigin: true,
+    //             secure: false
+    //         }
+    //     }
+    // },
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: 'http://localhost:4000'
+            apiUrl: 'https://node-dat-backend.herokuapp.com/api*'
         })
     }
 }

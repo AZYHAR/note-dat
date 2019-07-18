@@ -59,11 +59,14 @@ class SignUpPage extends React.Component {
             submitted: false,
             error_handle: false
         };
+
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(e) {
+        e.preventDefault();
+
         const { name, value } = e.target;
         this.setState({ [name]: value });
     }
@@ -74,6 +77,7 @@ class SignUpPage extends React.Component {
         this.setState({ submitted: true });
         const { username, password, name, password_confirm} = this.state;
         const { dispatch } = this.props;
+
         if(password === password_confirm){
             this.setState({error_handle: false});
             dispatch(userActions.signup(username, password, name));
@@ -84,8 +88,8 @@ class SignUpPage extends React.Component {
     }
   
     render() {
-        const { signingUp, classes, dispatch } = this.props;
-        const { username, password, name, password_confirm, submitted } = this.state;
+        const { classes } = this.props;
+        const { username, password, name, password_confirm } = this.state;
 
         return (
             <div className={classes.container}>
@@ -140,10 +144,8 @@ class SignUpPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { signingUp } = state.authentication;
     const { alert } = state;
     return {
-        signingUp,
         alert
     };
 }
