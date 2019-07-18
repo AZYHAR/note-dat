@@ -1,5 +1,0 @@
-1) The index.js files in each folder are barrel files that group all the exported modules together 
-so they can be imported using the folder path instead of the full module path and to enable 
-importing multiple modules in a single import (e.g. import { userActions, alertActions } from '../_actions').
-
-2)

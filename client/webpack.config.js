@@ -26,8 +26,16 @@ module.exports = {
     //     historyApiFallback: true,
     //     proxy: {
     //         '/api': {
-    //             target: 'http://localhost:5000'
+    //             target: 'https://node-dat-backend.herokuapp.com/',
+    //             changeOrigin: true,
+    //             secure: false
     //         }
     //     }
     // },
+    externals: {
+        // global app config object
+        config: JSON.stringify({
+            apiUrl: 'https://node-dat-backend.herokuapp.com/api*'
+        })
+    }
 }

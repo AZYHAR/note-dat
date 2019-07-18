@@ -116,11 +116,11 @@ class NoteList extends React.Component {
         this.handleClose = this.handleClose.bind(this);
     }
 
-    componentDidMount() {
-        this.interval = setInterval(() => {
-            this.forceUpdate();
-        }, 60000);
-    }
+    // componentDidMount() {
+    //     this.interval = setInterval(() => {
+    //         this.forceUpdate();
+    //     }, 60000);
+    // }
 
     handleChange(e) {
         const { name, value } = e.target;

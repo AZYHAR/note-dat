@@ -3,7 +3,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { history } from '../_helpers';
-import { alertActions } from '../_actions';
 import { PrivateRoute } from '../_components';
 import { HomePage } from '../HomePage';
 import { LoginPage } from '../LoginPage';
@@ -13,18 +12,11 @@ import { Alert } from '../_components'
 class App extends React.Component {
     constructor(props) {
         super(props);
-        
-        // Giving all the data to the store
-        const { dispatch } = this.props;
-        history.listen((location, action) => {
-            // clear alert on location change
-            // dispatch(alertActions.clear());
-        });
     }
 
     render() {
         const { alert } = this.props;
-        console.log(alert);
+        
         return (
             <React.Fragment>
                 <CssBaseline />
@@ -45,6 +37,8 @@ class App extends React.Component {
 
 function mapStateToProps(state) {
     const { alert } = state;
+    const { user } = state.authentication;
+
     return {
         alert
     };

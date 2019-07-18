@@ -47,6 +47,7 @@ function signup(email, password, name) {
                 user => { 
                     dispatch(success(user));
                     dispatch(alertActions.success("Welcome"));
+                    setAuthHeader();
                     history.push('/');
                 },
                 error => {

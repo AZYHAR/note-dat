@@ -64,6 +64,8 @@ class LoginPage extends React.Component {
     }
 
     handleChange(e) {
+        e.preventDefault();
+
         const { name, value } = e.target;
         this.setState({ [name]: value });
     }
@@ -80,8 +82,8 @@ class LoginPage extends React.Component {
     }
 
     render() {
-        const { classes, loggingIn } = this.props;
-        const { username, password, submitted } = this.state;
+        const { classes } = this.props;
+        const { username, password } = this.state;
 
         return (
             <div className={classes.container}>
@@ -120,12 +122,7 @@ class LoginPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { loggingIn } = state.authentication;
-    const { alert } = state;
-    return {
-        loggingIn,
-        alert
-    };
+    return {};
 }
 
 const connectedLoginPage = withStyles(styles)(connect(mapStateToProps)(LoginPage));
