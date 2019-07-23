@@ -35,27 +35,29 @@ ___
 
 #### Clone repository:
 
+Choose one from listed repositories for git clone
 ```
 git clone https://github.com/eliyaaah/note-dat.git
+git clone https://github.com/azyhar/note-dat.git
 cd note-dat
 ```
 #### Setup Python environment and install dependencies:
 ```
 virtualenv venv
 source venv/bin/activate     # or ./venv/Scripts/activate.ps1
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 #### Run migrations:
 ```
-python migrate.py db init
-python migrate.py db migrate
-python migrate.py db upgrade
+python3 migrate.py db init
+python3 migrate.py db migrate
+python3 migrate.py db upgrade
 ```
 
 #### Start local server:
 ```
-python run.py
+python3 run.py
 ```
 #### Start front-end
 
