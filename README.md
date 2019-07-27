@@ -7,7 +7,7 @@ Application supports user registration and logins. Notebooks and notes are assig
 
 ## Heroku:
 
-Note Dat is available on Heroku: https://node-dat.herokuapp.com/login
+Note Dat is available on Heroku: https://node-dat.herokuapp.com
 
 ## Technologies:
 
