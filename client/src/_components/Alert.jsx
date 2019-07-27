@@ -1,21 +1,21 @@
-import React from "react";
+import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from "prop-types";
-import classNames from "classnames";
-import Button from "@material-ui/core/Button";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import ErrorIcon from "@material-ui/icons/Error";
-import InfoIcon from "@material-ui/icons/Info";
-import CloseIcon from "@material-ui/icons/Close";
-import green from "@material-ui/core/colors/green";
-import amber from "@material-ui/core/colors/amber";
-import IconButton from "@material-ui/core/IconButton";
-import Snackbar from "@material-ui/core/Snackbar";
-import SnackbarContent from "@material-ui/core/SnackbarContent";
-import WarningIcon from "@material-ui/icons/Warning";
-import { withStyles } from "@material-ui/core/styles";
-import { alertActions } from "../_actions";
-import { alertConstants } from "../_constants";
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import Button from '@material-ui/core/Button';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import ErrorIcon from '@material-ui/icons/Error';
+import InfoIcon from '@material-ui/icons/Info';
+import CloseIcon from '@material-ui/icons/Close';
+import green from '@material-ui/core/colors/green';
+import amber from '@material-ui/core/colors/amber';
+import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import WarningIcon from '@material-ui/icons/Warning';
+import { withStyles } from '@material-ui/core/styles';
+import { alertActions } from '../_actions';
+import { alertConstants } from '../_constants';
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -45,8 +45,8 @@ const styles1 = theme => ({
     marginRight: theme.spacing.unit
   },
   message: {
-    display: "flex",
-    alignItems: "center"
+    display: 'flex',
+    alignItems: 'center'
   }
 });
 
@@ -57,18 +57,18 @@ function MySnackbarContent(props) {
   return (
     <SnackbarContent
       className={classNames(classes[variant], className)}
-      aria-describedby="client-snackbar"
+      aria-describedby='client-snackbar'
       message={
-        <span id="client-snackbar" className={classes.message}>
+        <span id='client-snackbar' className={classes.message}>
           <Icon className={classNames(classes.icon, classes.iconVariant)} />
           {message}
         </span>
       }
       action={[
         <IconButton
-          key="close"
-          aria-label="Close"
-          color="inherit"
+          key='close'
+          aria-label='Close'
+          color='inherit'
           className={classes.close}
           onClick={onClose}
         >
@@ -87,9 +87,9 @@ function MySnackbarContentFormErrors(props) {
   return (
     <SnackbarContent
       className={classNames(classes[variant], className)}
-      aria-describedby="client-snackbar"
+      aria-describedby='client-snackbar'
       message={
-        <span id="client-snackbar" className={classes.message}>
+        <span id='client-snackbar' className={classes.message}>
           <Icon className={classNames(classes.icon, classes.iconVariant)} />
           {message}
         </span>
@@ -104,11 +104,13 @@ MySnackbarContent.propTypes = {
   className: PropTypes.string,
   message: PropTypes.node,
   onClose: PropTypes.func,
-  variant: PropTypes.oneOf(["success", "warning", "error", "info"]).isRequired
+  variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired
 };
 
 export const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
-export const MySnackbarContentWrapperErrors = withStyles(styles1)(MySnackbarContentFormErrors);
+export const MySnackbarContentWrapperErrors = withStyles(styles1)(
+  MySnackbarContentFormErrors
+);
 
 const styles2 = theme => ({
   margin: {
@@ -122,7 +124,7 @@ class CustomizedSnackbars extends React.Component {
   };
 
   handleClose = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -136,8 +138,8 @@ class CustomizedSnackbars extends React.Component {
       <div>
         <Snackbar
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left"
+            vertical: 'bottom',
+            horizontal: 'left'
           }}
           open={this.state.open}
           autoHideDuration={6000}
@@ -149,7 +151,7 @@ class CustomizedSnackbars extends React.Component {
             variant={type}
             message={message}
           />
-        </Snackbar>  
+        </Snackbar>
       </div>
     );
   }
@@ -159,5 +161,7 @@ CustomizedSnackbars.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-const styledCustomizedAlert = withStyles(styles2)(connect()(CustomizedSnackbars)) ;
+const styledCustomizedAlert = withStyles(styles2)(
+  connect()(CustomizedSnackbars)
+);
 export { styledCustomizedAlert as Alert };
