@@ -1,8 +1,12 @@
-venv/
+# Database migration
 migrations/
-node_modules/
-__pycache__/
 
+__pycache__/
 .DS_Store
 
+# NPM modules
+node_modules/
+
+# virtualenv
+venv/
 

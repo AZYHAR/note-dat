@@ -17,14 +17,12 @@ function login(email, password) {
     .post('/api/auth/login', { email, password })
     .then(res => {
       localStorage.setItem('user', JSON.stringify(res.data));
-      //setAuthHeader();
       setInterceptors();
 
       return res.data;
     })
     .catch(err => {
       logout();
-      //location.reload(true);
       return Promise.reject(err.response.data.message);
     });
 }
@@ -40,13 +38,11 @@ function signup(email, password, name) {
     })
     .catch(err => {
       logout();
-      console.log(err);
       return Promise.reject(err.response.data.message);
     });
 }
 
 function logout() {
-  // remove user from local storage to log user out
   localStorage.removeItem('user');
   setAuthHeader();
 }

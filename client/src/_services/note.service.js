@@ -25,7 +25,6 @@ function addNote(title, body, notebook_id, notebook_move) {
   return axios
     .post('/api/note', { title: title, body: body, notebook_id: notebook_id })
     .then(res => {
-      console.log(res.data);
       return res.data;
     })
     .catch(err => {
@@ -34,7 +33,6 @@ function addNote(title, body, notebook_id, notebook_move) {
 }
 
 function updateNote(id, title, body, notebook_id) {
-  console.log('Service: Updating');
   return axios
     .put('/api/note', {
       id: id,
@@ -54,7 +52,6 @@ function deleteNote(id, title, body) {
   return axios
     .delete('/api/note', { params: { id: id, title: title, body: body } })
     .then(res => {
-      console.log(res.data);
       return res.data;
     })
     .catch(err => {

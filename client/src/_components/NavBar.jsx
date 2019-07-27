@@ -58,22 +58,6 @@ class NavBar extends React.Component {
     this.setState({ openChangePwd: true });
   };
 
-  handleChangePwd = event => {};
-
-  handleChangeTextField = event => {
-    switch (event.target.id) {
-      case 'currentPwd':
-        this.setState({ currentPwd: event.target.value });
-        break;
-      case 'newPwd':
-        this.setState({ newPwd: event.target.value });
-        break;
-      case 'confirmNewPwd':
-        this.setState({ confirmNewPwd: event.target.value });
-        break;
-    }
-  };
-
   handleClose = () => {
     this.setState({ anchorEl: null });
     this.setState({ open: false });
@@ -86,14 +70,6 @@ class NavBar extends React.Component {
   render() {
     const { classes, user } = this.props;
     const { anchorEl, open } = this.state;
-    const options = [
-      <Button onClick={this.handleClickChangePwd}>Change Password</Button>,
-      <Button>
-        <Link to='/login' className={styles.logoutButton}>
-          Logout
-        </Link>
-      </Button>
-    ];
 
     return (
       <div>
@@ -105,89 +81,13 @@ class NavBar extends React.Component {
             <Typography variant='h6' color='inherit' className={classes.grow}>
               Hi {user.name}!
             </Typography>
-            <div>
-              <IconButton
-                aria-label='More'
-                aria-controls='long-menu'
-                aria-haspopup='true'
-                onClick={this.handleClick}
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id='long-menu'
-                anchorEl={anchorEl}
-                keepMounted
-                open={open}
-                onClose={this.handleClose}
-                PaperProps={{
-                  style: {
-                    maxHeight: ITEM_HEIGHT * 4.5,
-                    width: 200
-                  }
-                }}
-              >
-                {options.map((option, index) => (
-                  <MenuItem
-                    key={index}
-                    selected={option === 'Pyxis'}
-                    onClick={this.handleClose}
-                  >
-                    {option}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </div>
+            <Button>
+              <Link to='/login' className={styles.logoutButton}>
+                Logout
+              </Link>
+            </Button>
           </Toolbar>
         </AppBar>
-        <Dialog
-          open={this.state.openChangePwd}
-          onClose={this.handleClose}
-          aria-labelledby='form-dialog-title'
-        >
-          <DialogTitle id='form-dialog-title'>Change password</DialogTitle>
-          <DialogContent>
-            <TextField
-              value={this.state.currentPwdValue}
-              onChange={this.handleChangeTextField}
-              autoFocus
-              margin='dense'
-              id='currentPwd'
-              label='Current password'
-              type='password'
-              placeholder='Current password'
-              fullWidth
-            />
-            <TextField
-              value={this.state.newPwd}
-              onChange={this.handleChangeTextField}
-              margin='dense'
-              id='newPwd'
-              label='New password'
-              type='password'
-              placeholder='New password'
-              fullWidth
-            />
-            <TextField
-              value={this.state.confirmNewPwd}
-              onChange={this.handleChangeTextField}
-              margin='dense'
-              id='confirmNewPwd'
-              label='Confirm new password'
-              type='password'
-              placeholder='New password'
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCloseChangePwd} color='primary'>
-              Cancel
-            </Button>
-            <Button onClick={this.handleChangePwd} color='primary'>
-              Change password
-            </Button>
-          </DialogActions>
-        </Dialog>
       </div>
     );
   }

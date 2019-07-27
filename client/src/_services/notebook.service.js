@@ -48,7 +48,6 @@ function renameNotebook(id, title) {
       return res.data;
     })
     .catch(err => {
-      console.log(err.response);
       return Promise.reject(err.response.data.message);
     });
 }
