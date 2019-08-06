@@ -23,6 +23,7 @@ Note Dat is available on Heroku: https://node-dat.herokuapp.com
 
 * React 16.0.0
 *	Redux 3.7.2
+* Material-UI 3.9.3
 
 
 
@@ -36,33 +37,33 @@ ___
 #### Clone repository:
 
 Choose one from listed repositories for git clone
-```
-git clone https://github.com/eliyaaah/note-dat.git
-git clone https://github.com/azyhar/note-dat.git
-cd note-dat
+```bash
+  git clone https://github.com/eliyaaah/note-dat.git
+  git clone https://github.com/azyhar/note-dat.git
+  cd note-dat
 ```
 #### Setup Python environment and install dependencies:
-```
-virtualenv venv
-source venv/bin/activate     # or ./venv/Scripts/activate.ps1
-pip3 install -r requirements.txt
+```bash
+  virtualenv venv
+  source venv/bin/activate     # or ./venv/Scripts/activate.ps1
+  pip3 install -r requirements.txt
 ```
 
 #### Run migrations:
-```
-python3 migrate.py db init
-python3 migrate.py db migrate
-python3 migrate.py db upgrade
+```bash
+  python3 migrate.py db init
+  python3 migrate.py db migrate
+  python3 migrate.py db upgrade
 ```
 
 #### Start local server:
-```
-python3 run.py
+```bash
+  python3 run.py
 ```
 #### Start front-end
 
-```
-cd client
-npm install
-npm start
+```bash
+  cd client
+  npm install
+  npm start
 ```
