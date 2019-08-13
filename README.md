@@ -15,7 +15,7 @@ Note Dat is available on Heroku: https://node-dat.herokuapp.com
 
 *	[Python 3.7](https://www.python.org)
 *	[Flask 0.12.4](https://flask.palletsprojects.com/en/1.0.x/) (It is a micro framework for Python)
-*	[SQLAlchemy 1.3.3](https://www.sqlalchemy.org) (It is the Python SQL toolkit and Object Relational Mapper that gives the full power and flexibility of SQL)
+*	[SQLAlchemy 1.3.3](https://www.sqlalchemy.org) (It is the Python SQL toolkit and ORM that gives the full power and flexibility of SQL)
 *	[Marshmallow 2.19.2](https://marshmallow.readthedocs.io/en/3.0/examples.html) (It is ORM/ODM/framework-agnostic library for converting complex datatypes)
 *	[Flask-JWT-Extended 3.18.1](https://pythonhosted.org/Flask-JWT/) (open, industry method for representing claims securely between two parties)
 
